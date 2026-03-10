@@ -1,0 +1,115 @@
+{
+  "candidates": [],
+  "vacancies": [
+    {
+      "id": "frontend",
+      "title": "Frontend Developer",
+      "description": "React.js, Tailwind CSS expert",
+      "isOpen": true
+    },
+    {
+      "id": "backend",
+      "title": "Backend Developer",
+      "description": "Node.js, PostgreSQL expert",
+      "isOpen": true
+    },
+    {
+      "id": "fullstack",
+      "title": "Fullstack Engineer",
+      "description": "MERN Stack expert",
+      "isOpen": true
+    }
+  ],
+  "questions": [
+    {
+      "id": 2,
+      "position": "fullstack",
+      "level": "Intermediate",
+      "type": "mcq",
+      "text": "Which React hook is used for side effects?",
+      "options": [
+        "useState",
+        "useEffect",
+        "useContext",
+        "useReducer"
+      ],
+      "correct": "useEffect",
+      "selected": true
+    },
+    {
+      "id": 3,
+      "position": "frontend",
+      "level": "Advanced",
+      "type": "mcq",
+      "text": "What is the purpose of the 'useMemo' hook in React?",
+      "options": [
+        "To memoize functions",
+        "To memoize expensive calculations",
+        "To memoize state updates",
+        "To memoize DOM elements"
+      ],
+      "correct": "To memoize expensive calculations",
+      "selected": true
+    },
+    {
+      "id": 4,
+      "position": "backend",
+      "level": "Basic",
+      "type": "mcq",
+      "text": "Which HTTP status code represents 'No Content'?",
+      "options": [
+        "200",
+        "201",
+        "204",
+        "404"
+      ],
+      "correct": "204",
+      "selected": true
+    },
+    {
+      "id": 5,
+      "position": "fullstack",
+      "level": "Advanced",
+      "type": "mcq",
+      "text": "Describe the difference between an Abstract Class and an Interface in Java?",
+      "options": [
+        "Abstract classes can have state",
+        "Interfaces can have state",
+        "Both are exactly the same",
+        "None of the above"
+      ],
+      "correct": "Abstract classes can have state",
+      "selected": true
+    },
+    {
+      "id": 1773039113905,
+      "position": "backend",
+      "type": "mcq",
+      "level": "Basic",
+      "text": "zxdfd",
+      "options": [
+        "sdfwe",
+        "sdfew",
+        "dfdw",
+        "dasfdwf"
+      ],
+      "correct": "",
+      "selected": true
+    }
+  ],
+  "interviews": [],
+  "admin_users": [
+    {
+      "id": 1,
+      "email": "admin@embel.co.in",
+      "password": "admin123",
+      "role": "superadmin",
+      "name": "Alex Rivera",
+      "lastLogin": "2026-03-10T05:15:51.187Z"
+    }
+  ],
+  "settings": {
+    "projectName": "Embel TalentSphere",
+    "theme": "Blue & Orange"
+  }
+}

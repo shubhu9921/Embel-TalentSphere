@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embel TalentSphere </title>
+    <style>
+        :root {
+            --primary: #002D5E;
+            --secondary: #ff6e00;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-center: center;
+            height: 100vh;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 90%;
+            max-width: 1200px;
+            height: 80%;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.1);
+            padding: 80px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid rgba(255, 110, 0, 0.1);
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 20px;
+        }
+
+        .slide-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -2px;
+        }
+
+        .slide-number {
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--secondary);
+            background: #fff7ed;
+            padding: 8px 16px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .slide-content {
+            font-size: 24px;
+            line-height: 1.6;
+            color: #475569;
+        }
+
+        ul {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+            font-weight: 500;
+        }
+
+        li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 12px;
+            width: 12px;
+            height: 12px;
+            background: var(--secondary);
+            border-radius: 4px;
+        }
+
+        .highlight {
+            color: var(--secondary);
+            font-weight: 900;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 20px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 10px 20px rgba(0, 45, 94, 0.2);
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            background: var(--secondary);
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .logo {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            height: 40px;
+        }
+
+        .tagline {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            font-size: 12px;
+            font-weight: 900;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 6px;
+            background: var(--secondary);
+            transition: width 0.3s;
+            z-index: 101;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="progress-bar" id="progress"></div>
+    <img src="https://www.embel.co.in/images/logos/logo-embel.png" class="logo" alt="Logo">
+    <div class="tagline">Embel TalentSphere | Project Overview 2026</div>
+
+    <div class="presentation-container">
+        <!-- Slide 1 -->
+        <div class="slide active">
+            <div class="slide-header">
+                <h1 class="slide-title">Embel TalentSphere</h1>
+                <span class="slide-number">Slide 01</span>
+            </div>
+            <div class="slide-content">
+                <p style="font-size: 32px; font-weight: 800; color: var(--secondary); margin-bottom: 20px;">Next-Gen
+                    Recruitment & Assessment Platform</p>
+                <p>A premium, AI-driven solution designed to streamline the entire hiring lifecycle—from candidate
+                    attraction to technical evaluation.</p>
+                <ul>
+                    <li>Professional branding & high-performance UI</li>
+                    <li>Secure, malpractice-free assessment environment</li>
+                    <li>Role-based collaboration for Admin, HR, and Interviewers</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Technology Stack</h1>
+                <span class="slide-number">Slide 02</span>
+            </div>
+            <div class="slide-content">
+                <p>Built on a foundation of modern web standards for <span class="highlight">Visual Excellence</span>
+                    and <span class="highlight">Peak Performance</span>.</p>
+                <ul>
+                    <li><strong>React.js:</strong> Component-based UI architecture</li>
+                    <li><strong>Vanilla CSS:</strong> Tailored Design Tokens (Orange & Blue)</li>
+                    <li><strong>Lucide-React:</strong> Premium vector iconography</li>
+                    <li><strong>JSON Engine:</strong> Centralized, reliable data management</li>
+                    <li><strong>Proctoring Hooks:</strong> Custom security integration</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Candidate Lifecycle</h1>
+                <span class="slide-number">Slide 03</span>
+            </div>
+            <div class="slide-content">
+                <p>Enhancing the <span class="highlight">First Impression</span> for potential talent.</p>
+                <ul>
+                    <li><strong>Dynamic Portal:</strong> Premium animations and fluid layouts</li>
+                    <li><strong>Smart Job Board:</strong> Real-time vacancy listings</li>
+                    <li><strong>QR Registration:</strong> 13-field comprehensive data capture</li>
+                    <li><strong>Conditional Logic:</strong> Tailored paths for Freshers vs. Experienced professionals
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">AI Proctoring</h1>
+                <span class="slide-number">Slide 04</span>
+            </div>
+            <div class="slide-content">
+                <p>Guaranteed <span class="highlight">Assessment Integrity</span> through multi-layered security.</p>
+                <ul>
+                    <li><strong>Fullscreen Enforcement:</strong> Prevents external browsing</li>
+                    <li><strong>Tab/Window Monitoring:</strong> Immediate auto-submission on tab switch</li>
+                    <li><strong>Live Camera:</strong> Persistent recording with malpractice logging</li>
+                    <li><strong>Intelligent Submission:</strong> AI-triggered safeguards</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Question Management</h1>
+                <span class="slide-number">Slide 05</span>
+            </div>
+            <div class="slide-content">
+                <p>Scaling evaluations with <span class="highlight">100+ Questions</span> and randomization.</p>
+                <ul>
+                    <li><strong>Tabular Bank:</strong> High-density view for large datasets</li>
+                    <li><strong>Position Curation:</strong> Role-specific question filtering</li>
+                    <li><strong>Active Pool Logic:</strong> Instant activation/deactivation control</li>
+                    <li><strong>Randomization Engine:</strong> Unique sessions for every candidate</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Professional Dashboards</h1>
+                <span class="slide-number">Slide 06</span>
+            </div>
+            <div class="slide-content">
+                <p>Empowering the <span class="highlight">Hiring Team</span> with specialized tools.</p>
+                <ul>
+                    <li><strong>Super Admin:</strong> Team management & system oversight</li>
+                    <li><strong>HR Portal:</strong> Shortlisting & Proctoring verification</li>
+                    <li><strong>Interviewer Hub:</strong> Technical review and feedback tools</li>
+                    <li><strong>Interview Validation:</strong> Restricted past-date scheduling</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1 class="slide-title">Success & Future</h1>
+                <span class="slide-number">Slide 07</span>
+            </div>
+            <div class="slide-content">
+                <p>Driving <span class="highlight">Recruitment Efficiency</span> at scale.</p>
+                <ul>
+                    <li><strong>Scalability:</strong> Built for high-volume hiring</li>
+                    <li><strong>Reliability:</strong> Proven security and data persistence</li>
+                    <li><strong>Brand Value:</strong> Professional presentation of company excellence</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" id="prevBtn" disabled>&larr;</button>
+        <button class="btn" id="nextBtn">&rarr;</button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progress = document.getElementById('progress');
+        let currentSlide = 0;
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+
+            const percent = ((currentSlide + 1) / slides.length) * 100;
+            progress.style.width = percent + '%';
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        // Key navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextBtn.click();
+            if (e.key === 'ArrowLeft') prevBtn.click();
+        });
+    </script>
+</body>
+
+</html>
