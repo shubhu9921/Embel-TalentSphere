@@ -115,31 +115,38 @@ const TechnicalReview = () => {
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Technical Proficiency</p>
                                     <div className="flex items-center gap-2">
                                         {[1, 2, 3, 4, 5].map((s) => (
-                                            <button
+                                            <Button
                                                 key={s}
+                                                variant={feedback.rating >= s ? 'secondary' : 'ghost'}
+                                                size="sm"
+                                                icon={Star}
                                                 onClick={() => setFeedback({ ...feedback, rating: s })}
-                                                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${feedback.rating >= s ? 'bg-secondary-500 text-white shadow-lg shadow-secondary-500/30' : 'bg-white text-slate-300 border border-slate-100 hover:border-secondary-300'}`}
+                                                className={`rounded-xl ${feedback.rating >= s ? 'shadow-lg shadow-secondary-500/30' : 'text-slate-300 border border-slate-100 hover:border-secondary-300'}`}
                                             >
-                                                <Star className={`w-5 h-5 ${feedback.rating >= s ? 'fill-current' : ''}`} />
-                                            </button>
+                                                {/* No text needed, icon handles it */}
+                                            </Button>
                                         ))}
                                     </div>
                                 </div>
                                 <div className="p-5 bg-slate-50/50 rounded-3xl border border-slate-100">
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Final Decision</p>
                                     <div className="flex items-center gap-2">
-                                        <button
+                                        <Button
+                                            variant={feedback.decision === 'hire' ? 'success' : 'ghost'}
+                                            size="sm"
                                             onClick={() => setFeedback({ ...feedback, decision: 'hire' })}
-                                            className={`flex-1 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all border ${feedback.decision === 'hire' ? 'bg-emerald-500 text-white border-emerald-500 shadow-lg shadow-emerald-500/30' : 'bg-white text-emerald-600 border-emerald-100 hover:bg-emerald-50'}`}
+                                            className={`flex-1 ${feedback.decision === 'hire' ? 'shadow-lg shadow-emerald-500/30' : 'text-emerald-600 border-emerald-100'}`}
                                         >
                                             Hire
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button
+                                            variant={feedback.decision === 'reject' ? 'danger' : 'ghost'}
+                                            size="sm"
                                             onClick={() => setFeedback({ ...feedback, decision: 'reject' })}
-                                            className={`flex-1 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all border ${feedback.decision === 'reject' ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/30' : 'bg-white text-red-600 border-red-100 hover:bg-red-50'}`}
+                                            className={`flex-1 ${feedback.decision === 'reject' ? 'shadow-lg shadow-red-500/30' : 'text-red-600 border-red-100'}`}
                                         >
                                             Reject
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -161,10 +168,12 @@ const TechnicalReview = () => {
                             <div className="pt-4">
                                 <Button
                                     onClick={handleSubmitFeedback}
-                                    className="w-full py-5 text-base font-black rounded-3xl bg-slate-900 hover:bg-black shadow-2xl flex items-center justify-center gap-3"
+                                    variant="primary"
+                                    size="lg"
+                                    icon={CheckCircle2}
+                                    className="w-full shadow-2xl"
                                 >
-                                    <CheckCircle2 className="w-5 h-5" />
-                                    <span>Submit Final Evaluation</span>
+                                    Submit Final Evaluation
                                 </Button>
                             </div>
                         </div>

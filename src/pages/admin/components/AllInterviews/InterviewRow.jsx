@@ -1,6 +1,7 @@
 import React from 'react';
 import { Clock, User, MoreVertical } from 'lucide-react';
 import Card from '../../../../components/Card';
+import Button from '../../../../components/Button';
 
 const InterviewRow = ({ interview }) => {
     return (
@@ -39,9 +40,13 @@ const InterviewRow = ({ interview }) => {
                     }`}>
                     {interview.status || 'pending'}
                 </div>
-                <button aria-label="More options" className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-                    <MoreVertical className="w-4 h-4" />
-                </button>
+                <Button 
+                    variant="ghost"
+                    size="md"
+                    icon={MoreVertical}
+                    className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-all border-none bg-transparent"
+                    aria-label="More options"
+                />
             </div>
         </Card>
     );

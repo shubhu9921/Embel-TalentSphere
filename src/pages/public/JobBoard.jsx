@@ -1,9 +1,10 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Briefcase, Filter, ArrowRight, Clock } from 'lucide-react';
 import Navbar from '../../components/public/Navbar';
 import JobCard from '../../components/public/JobCard';
 import ApiService from '../../services/ApiService';
+import Select from '../../components/Select';
 
 const JobBoard = () => {
     const [jobs, setJobs] = useState([]);
@@ -63,30 +64,19 @@ const JobBoard = () => {
                                 placeholder="Search by job title or keywords..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full h-16 pl-12 pr-6 rounded-2xl bg-white/5 border border-white/10 text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] transition-all"
+                                className="w-full h-16 pl-12 pr-6 rounded-2xl bg-white/5 border border-white/10 text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] transition-all placeholder:text-slate-500"
                             />
                         </div>
-                        <div className="md:w-64 relative group">
-                            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#ff6e00] transition-colors" size={20} />
-                            <div className="dropdown dropdown-hover w-full h-full">
-                                <div tabIndex={0} role="button" className="w-full h-16 pl-12 pr-6 rounded-2xl bg-white/5 border border-white/10 text-white font-medium flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] transition-all cursor-pointer">
-                                    <span className="truncate">{selectedCategory}</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="m6 9 6 6 6-6" /></svg>
-                                </div>
-                                <ul tabIndex={0} className="dropdown-content menu bg-white rounded-2xl z-100 w-full p-2 shadow-elevation-high border border-slate-100 mt-2">
-                                    {categories.map(cat => (
-                                        <li key={cat}>
-                                            <button
-                                                type="button"
-                                                onClick={() => setSelectedCategory(cat)}
-                                                className={`w-full text-left px-4 py-3 rounded-xl transition-all ${selectedCategory === cat ? 'bg-orange-50 text-[#ff6e00] font-bold' : 'text-slate-600 hover:bg-slate-50'}`}
-                                            >
-                                                {cat}
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                        <div className="md:w-64 relative group overflow-visible">
+                            <Select 
+                                value={selectedCategory}
+                                options={categories}
+                                onSelect={cat => setSelectedCategory(cat)}
+                                placeholder="Category"
+                                icon={Filter}
+                                triggerClassName="h-16 bg-white/5 border-white/10 text-white rounded-2xl hover:bg-white/10 hover:border-orange-500/50"
+                                contentClassName="w-full bg-slate-900 border-white/10 shadow-2xl mt-2"
+                            />
                         </div>
                     </div>
                 </div>
@@ -120,12 +110,14 @@ const JobBoard = () => {
                             </div>
                             <h3 className="text-2xl font-black text-white uppercase mb-2">No jobs matched your search</h3>
                             <p className="text-slate-500 font-medium lowercase">Try adjusting your filters or search terms</p>
-                            <button
+                            <Button
                                 onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
-                                className="mt-8 text-[#ff6e00] font-black uppercase tracking-widest text-sm hover:underline"
+                                variant="ghost"
+                                size="sm"
+                                className="mt-8 text-[#ff6e00]"
                             >
                                 Clear all filters
-                            </button>
+                            </Button>
                         </div>
                     )}
                 </div>

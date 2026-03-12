@@ -1,7 +1,7 @@
-import React from 'react';
-import { Edit2, Trash2, CheckCircle2, Search } from 'lucide-react';
+import { Edit2, Trash2, Check, Search } from 'lucide-react';
 import Card from '../../../../components/Card';
 import Badge from '../../../../components/Badge';
+import Button from '../../../../components/Button';
 
 const QuestionTable = ({
     questions = [],
@@ -17,7 +17,7 @@ const QuestionTable = ({
                     <thead>
                         <tr className="bg-slate-50 border-b border-slate-100">
                             <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest w-20 text-center">Active</th>
-                            <th className="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest min-w-75">Question Details</th>
+                            <th className="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest min-w-[300px]">Question Details</th>
                             <th className="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Vacancy</th>
                             <th className="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Difficulty</th>
                             <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
@@ -25,16 +25,20 @@ const QuestionTable = ({
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {questions.map((q) => (
-                            <tr key={q.id} className={`group transition-all duration-300 ${q.selected ? 'bg-orange-50/10' : ''}`}>
+                            <tr key={q.id} className={`group transition-all duration-300 ${q.selected ? 'bg-emerald-50/20' : ''}`}>
                                 <td className="px-8 py-6">
                                     <div className="flex justify-center">
-                                        <button
-                                            aria-label={q.selected ? "Deselect question" : "Select question"}
+                                        <Button
+                                            variant="ghost"
+                                            size="xs"
+                                            icon={Check}
                                             onClick={() => onToggleSelection?.(q)}
-                                            className={`w-6 h-6 rounded-lg transition-all flex items-center justify-center border-2 ${q.selected ? 'bg-[#ff6e00] border-[#ff6e00] text-white' : 'bg-white border-slate-200 text-transparent'}`}
-                                        >
-                                            <CheckCircle2 size={14} className={q.selected ? 'opacity-100' : 'opacity-0'} />
-                                        </button>
+                                            className={`rounded-lg border-2 transition-all duration-300 ${
+                                                q.selected 
+                                                ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
+                                                : 'bg-white border-slate-200 text-transparent hover:border-slate-300'
+                                            }`}
+                                        />
                                     </div>
                                 </td>
                                 <td className="px-6 py-6">
@@ -70,22 +74,20 @@ const QuestionTable = ({
                                 </td>
                                 <td className="px-8 py-6 text-right">
                                     <div className="flex items-center justify-end gap-2">
-                                        <button
-                                            aria-label="Edit Question"
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            icon={Edit2}
                                             onClick={() => onEdit?.(q)}
-                                            className="p-2.5 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
-                                            title="Edit"
-                                        >
-                                            <Edit2 size={16} />
-                                        </button>
-                                        <button
-                                            aria-label="Delete Question"
+                                            className="text-slate-400 hover:text-blue-500 hover:bg-blue-50"
+                                        />
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            icon={Trash2}
                                             onClick={() => onDelete?.(q.id)}
-                                            className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                                            title="Delete"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
+                                            className="text-slate-400 hover:text-red-500 hover:bg-red-50"
+                                        />
                                     </div>
                                 </td>
                             </tr>

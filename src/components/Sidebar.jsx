@@ -4,6 +4,7 @@ import {
     LayoutDashboard, Users, FileQuestion, Briefcase, Award,
     LogOut, Settings, HelpCircle, Menu, ShieldAlert
 } from 'lucide-react';
+import Button from './Button';
 
 const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
     const navigate = useNavigate();
@@ -64,19 +65,21 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                         </div>
                     </div>
                 )}
-                <button
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    icon={Menu}
                     onClick={() => setCollapsed(!collapsed)}
-                    className={`p-2 rounded-lg hover:bg-slate-100 text-slate-600 transition-all ${collapsed ? 'mx-auto' : ''}`}
-                >
-                    <Menu size={20} />
-                </button>
+                    aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                    className={`p-2 rounded-lg hover:bg-slate-100 text-slate-600 transition-all border-none ${collapsed ? 'mx-auto' : ''}`}
+                />
             </div>
 
             {/* Menu Navigation */}
             <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden no-scrollbar flex flex-col gap-0.5 mt-4">
                 {!collapsed && (
                     <div className="px-5 mb-2">
-                        <span className="text-[10px] font-black text-[#19325c] uppercase tracking-[0.2em]">Hiring Process</span>
+                        <span className="text-xs font-black text-[#19325c] uppercase tracking-[0.2em]">Hiring Process</span>
                     </div>
                 )}
 
@@ -85,6 +88,7 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                         key={link.path}
                         to={link.path}
                         title={collapsed ? link.label : ""}
+                        aria-label={link.label}
                         end={link.path === '/admin' || link.path === '/interviewer'}
                         className={({ isActive }) => `
                             flex items-center gap-3 w-full py-3 transition-all duration-200 group shrink-0
@@ -96,8 +100,8 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                     >
                         {({ isActive }) => (
                             <>
-                                <link.icon size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-950 group-hover:text-[#ff6e00] transition-colors"} />
-                                <span className={`text-[13px] ${collapsed ? 'hidden' : 'block'}`}>{link.label}</span>
+                                <link.icon size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-950 group-hover:text-[#ff6e00] transition-colors"} aria-hidden="true" />
+                                <span className={`text-[13px] ${collapsed ? 'hidden' : 'block'}`} aria-hidden={collapsed}>{link.label}</span>
                             </>
                         )}
                     </NavLink>
@@ -107,13 +111,14 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                 <div className="mt-6">
                     {!collapsed && (
                         <div className="px-5 mb-2">
-                            <span className="text-[10px] font-black text-[#19325c] uppercase tracking-[0.2em]">Management</span>
+                            <span className="text-xs font-black text-[#19325c] uppercase tracking-[0.2em]">Management</span>
                         </div>
                     )}
 
                     <NavLink
                         to={`${(role === 'superadmin' || role === 'admin' || role === 'hr') ? '/admin' : `/${role}`}/settings`}
                         title={collapsed ? "Settings" : ""}
+                        aria-label="Settings"
                         className={({ isActive }) => `
                             flex items-center gap-3 w-full py-3 transition-all duration-200 group shrink-0
                             ${collapsed ? "justify-center rounded-lg mx-2 w-auto" : "pl-4 rounded-r-full rounded-l-none mr-2"}
@@ -124,8 +129,8 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                     >
                         {({ isActive }) => (
                             <>
-                                <Settings size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-950 group-hover:text-[#ff6e00] transition-colors"} />
-                                <span className={`text-[13px] ${collapsed ? 'hidden' : 'block'}`}>Settings</span>
+                                <Settings size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-950 group-hover:text-[#ff6e00] transition-colors"} aria-hidden="true" />
+                                <span className={`text-[13px] ${collapsed ? 'hidden' : 'block'}`} aria-hidden={collapsed}>Settings</span>
                             </>
                         )}
                     </NavLink>
@@ -133,6 +138,7 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                     <NavLink
                         to={`${(role === 'superadmin' || role === 'admin' || role === 'hr') ? '/admin' : `/${role}`}/help`}
                         title={collapsed ? "Support" : ""}
+                        aria-label="Support"
                         className={({ isActive }) => `
                             flex items-center gap-3 w-full py-3 transition-all duration-200 group shrink-0
                             ${collapsed ? "justify-center rounded-lg mx-2 w-auto" : "pl-4 rounded-r-full rounded-l-none mr-2"}
@@ -143,8 +149,8 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
                     >
                         {({ isActive }) => (
                             <>
-                                <HelpCircle size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-950 group-hover:text-[#ff6e00] transition-colors"} />
-                                <span className={`text-[13px] ${collapsed ? 'hidden' : 'block'}`}>Support</span>
+                                <HelpCircle size={18} className={isActive ? "text-[#ff6e00]" : "text-slate-950 group-hover:text-[#ff6e00] transition-colors"} aria-hidden="true" />
+                                <span className={`text-[13px] ${collapsed ? 'hidden' : 'block'}`} aria-hidden={collapsed}>Support</span>
                             </>
                         )}
                     </NavLink>
@@ -153,19 +159,21 @@ const Sidebar = ({ role = 'superadmin', collapsed, setCollapsed }) => {
 
             {/* Logout Button */}
             <div className={`px-2 py-3 border-t border-gray-100 shrink-0 ${collapsed ? 'flex justify-center' : ''}`}>
-                <button
+                <Button
+                    variant="ghost"
+                    size="md"
+                    icon={LogOut}
                     onClick={handleLogout}
-                    title={collapsed ? "Sign Out" : ""}
+                    aria-label="Sign Out"
                     className={`
-                        flex items-center gap-3 transition-all duration-200 group rounded-xl hover:bg-rose-50
-                        ${collapsed ? "p-3" : "w-full py-3 pl-4"}
+                        flex items-center gap-3 transition-all duration-200 group rounded-xl hover:bg-rose-50 border-none
+                        ${collapsed ? "justify-center p-3" : "w-full py-3 pl-4 justify-start"}
                     `}
                 >
-                    <LogOut size={18} className="text-slate-950 group-hover:text-rose-600 transition-colors" />
                     {!collapsed && (
                         <span className="text-[13px] font-black text-slate-950 group-hover:text-rose-600 uppercase tracking-wider">Sign Out</span>
                     )}
-                </button>
+                </Button>
             </div>
 
             {/* Footer */}

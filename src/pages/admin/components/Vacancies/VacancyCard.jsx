@@ -1,6 +1,7 @@
 import React from 'react';
 import { Briefcase, Power, Trash2, Edit2, Users, Layout } from 'lucide-react';
 import Card from '../../../../components/Card';
+import Button from '../../../../components/Button';
 
 const VacancyCard = ({ vacancy, applicantsCount, onToggleStatus, onDelete, onEdit }) => {
     return (
@@ -10,27 +11,27 @@ const VacancyCard = ({ vacancy, applicantsCount, onToggleStatus, onDelete, onEdi
                     <Briefcase className="w-6 h-6" />
                 </div>
                 <div className="flex items-center gap-1.5">
-                    <button
+                    <Button
                         onClick={() => onToggleStatus(vacancy)}
-                        aria-label="Toggle Status"
-                        className={`p-2 rounded-xl transition-all ${vacancy.isOpen ? 'text-emerald-500 hover:bg-emerald-50' : 'text-slate-300 hover:bg-slate-50'}`}
-                    >
-                        <Power className="w-4 h-4" />
-                    </button>
-                    <button
+                        variant="ghost"
+                        size="xs"
+                        icon={Power}
+                        className={vacancy.isOpen ? 'text-emerald-500 hover:bg-emerald-50' : 'text-slate-300 hover:bg-slate-50'}
+                    />
+                    <Button
                         onClick={() => { if (window.confirm('Are you sure you want to delete this vacancy?')) onDelete(vacancy.id); }}
-                        aria-label="Delete Vacancy"
-                        className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                    >
-                        <Trash2 className="w-4 h-4" />
-                    </button>
-                    <button
+                        variant="ghost"
+                        size="xs"
+                        icon={Trash2}
+                        className="text-slate-400 hover:text-red-500 hover:bg-red-50"
+                    />
+                    <Button
                         onClick={() => onEdit(vacancy)}
-                        aria-label="Edit Vacancy"
-                        className="p-2 text-slate-400 hover:text-[#ff6e00] rounded-xl transition-all"
-                    >
-                        <Edit2 className="w-4 h-4" />
-                    </button>
+                        variant="ghost"
+                        size="xs"
+                        icon={Edit2}
+                        className="text-slate-400 hover:text-[#ff6e00]"
+                    />
                 </div>
             </div>
 

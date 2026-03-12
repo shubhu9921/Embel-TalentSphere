@@ -119,7 +119,7 @@ const TeamManagement = () => {
                     <Button
                         onClick={() => handleOpenModal()}
                         icon={UserPlus}
-                        className="rounded-xl px-6 py-3 shadow-2xl shadow-orange-500/20"
+                        variant="secondary"
                     >
                         ADD TEAM MEMBER
                     </Button>

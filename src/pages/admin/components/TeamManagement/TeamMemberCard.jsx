@@ -1,6 +1,7 @@
 import React from 'react';
 import { Users, Mail, Award, Edit3, Trash2 } from 'lucide-react';
 import Card from '../../../../components/Card';
+import Button from '../../../../components/Button';
 
 const TeamMemberCard = ({ member, vacancies, onEdit, onDelete }) => {
     return (
@@ -33,20 +34,22 @@ const TeamMemberCard = ({ member, vacancies, onEdit, onDelete }) => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        icon={Edit3}
                         onClick={() => onEdit(member)}
-                        className="p-3 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
+                        className="text-slate-400 hover:text-blue-500 hover:bg-blue-50"
                         title="Edit Member"
-                    >
-                        <Edit3 size={18} />
-                    </button>
-                    <button
+                    />
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        icon={Trash2}
                         onClick={() => { if (window.confirm('Are you sure you want to remove this team member?')) onDelete(member.id); }}
-                        className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                        className="text-slate-400 hover:text-red-500 hover:bg-red-50"
                         title="Remove Member"
-                    >
-                        <Trash2 size={18} />
-                    </button>
+                    />
                 </div>
             </div>
         </Card>

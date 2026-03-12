@@ -1,4 +1,6 @@
 import React from 'react';
+import { X } from 'lucide-react';
+import Button from './Button';
 /* Lucide icons like X would be used if available, for now vanilla */
 
 const Modal = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
@@ -17,14 +19,14 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
             <div className={`bg-white rounded-3xl shadow-2xl w-full ${sizes[size]} overflow-hidden animate-in zoom-in-95 duration-200`}>
                 <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                     <h3 className="text-lg font-semibold text-[#19325c] font-sans">{title}</h3>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        icon={X}
                         onClick={onClose}
-                        className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
-                    >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+                        aria-label="Close modal"
+                        className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors border-none bg-transparent"
+                    />
                 </div>
                 <div className="p-6 overflow-y-auto max-h-[80vh]">
                     {children}

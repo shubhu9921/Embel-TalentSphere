@@ -1,7 +1,8 @@
 import React from 'react';
-import { Mail, Trash2, Briefcase, Phone, Calendar } from 'lucide-react';
+import { Mail, Trash2, Briefcase, Phone, Calendar, ShieldCheck } from 'lucide-react';
 import Card from '../../../../components/Card';
 import Badge from '../../../../components/Badge';
+import Button from '../../../../components/Button';
 
 const CandidateCard = ({ candidate, interviews = [], interviewers = [], onClick, onDelete }) => {
     const interview = interviews.find(i => String(i.candidateId) === String(candidate.id));
@@ -44,13 +45,14 @@ const CandidateCard = ({ candidate, interviews = [], interviewers = [], onClick,
                         <Badge variant={getStatusVariant(candidate.status)} size="sm" className="uppercase tracking-widest">
                             {candidate.status}
                         </Badge>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            icon={Trash2}
                             onClick={(e) => { e.stopPropagation(); onDelete?.(candidate.id); }}
-                            className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-rose-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+                            className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-rose-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 border-none bg-transparent"
                             aria-label="Delete candidate"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
+                        />
                     </div>
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl ring-1 ring-emerald-100 shadow-sm transition-all group-hover:bg-emerald-500 group-hover:text-white group-hover:ring-emerald-500">
                         <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Score</span>
@@ -81,6 +83,28 @@ const CandidateCard = ({ candidate, interviews = [], interviewers = [], onClick,
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Time</p>
                             <p className="text-[11px] font-bold text-slate-700">{interview.time || 'TBD'}</p>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {candidate.submissionReason && (
+                <div className="mb-6 p-4 bg-orange-50 rounded-2xl border border-orange-100 flex items-center justify-between group animate-in fade-in slide-in-from-top-2 duration-500 relative z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-white text-[#ff6e00] flex items-center justify-center shadow-sm border border-orange-50">
+                            <ShieldCheck className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="text-[9px] font-black text-orange-400 uppercase tracking-widest">Assessment Integrity</p>
+                            <p className="text-xs font-bold text-slate-700 truncate max-w-[150px]">
+                                {candidate.submissionReason}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="text-right pr-1">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest font-mono">Timestamp</p>
+                        <p className="text-[10px] font-bold text-slate-500">
+                            {candidate.submittedAt ? new Date(candidate.submittedAt).toLocaleDateString([], { month: 'numeric', day: 'numeric', year: '2-digit' }) : 'N/A'}
+                        </p>
                     </div>
                 </div>
             )}

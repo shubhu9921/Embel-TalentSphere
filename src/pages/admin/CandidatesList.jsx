@@ -53,12 +53,18 @@ const CandidatesList = () => {
         }
     };
 
-    const stats = {
+    const statusGroups = React.useMemo(() => ({
+        shortlisted: ['shortlisted', 'interview scheduled'],
+        rejected: ['rejected', 'not selected'],
+        applied: ['applied', 'pending', 'registered']
+    }), []);
+
+    const stats = React.useMemo(() => ({
         total: candidates.length,
-        shortlisted: candidates.filter(c => c.status === 'shortlisted' || c.status === 'interview scheduled').length,
-        rejected: candidates.filter(c => c.status === 'rejected' || c.status === 'not selected').length,
-        pending: candidates.filter(c => c.status === 'applied' || c.status === 'pending').length
-    };
+        shortlisted: candidates.filter(c => statusGroups.shortlisted.includes(c.status)).length,
+        rejected: candidates.filter(c => statusGroups.rejected.includes(c.status)).length,
+        pending: candidates.filter(c => statusGroups.applied.includes(c.status)).length
+    }), [candidates, statusGroups]);
 
     const handleUpdateStatus = async (id, status, extraData = {}) => {
         try {
@@ -120,10 +126,11 @@ const CandidatesList = () => {
         return candidates.filter(c => {
             const matchesSearch = (c.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                 (c.email || '').toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesStatus = statusFilter === 'all' || c.status === statusFilter;
+            const matchesStatus = statusFilter === 'all' || 
+                                 (statusGroups[statusFilter] ? statusGroups[statusFilter].includes(c.status) : c.status === statusFilter);
             return matchesSearch && matchesStatus;
         });
-    }, [candidates, searchTerm, statusFilter]);
+    }, [candidates, searchTerm, statusFilter, statusGroups]);
 
 
     if (loading) return <div className="p-10 flex justify-center"><Loader size="lg" /></div>;
@@ -145,7 +152,13 @@ const CandidatesList = () => {
                                 className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all w-64 shadow-sm"
                             />
                         </div>
-                        <Button variant="outline" icon={Filter} className="rounded-xl px-4 h-10" onClick={() => console.log('Filter clicked')}>Filter</Button>
+                        <Button 
+                            variant="outline" 
+                            icon={Filter} 
+                            onClick={() => console.log('Filter clicked')}
+                        >
+                            Filter
+                        </Button>
                     </div>
                 }
             />

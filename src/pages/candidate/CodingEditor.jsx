@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
 import Button from '../../components/Button';
-import { Play, Send, ChevronDown } from 'lucide-react';
+import { Play, Send } from 'lucide-react';
+import Select from '../../components/Select';
 
 const CodingEditor = ({ initialCode = '', language = 'javascript', onSave }) => {
     const [code, setCode] = useState(initialCode);
@@ -10,10 +11,10 @@ const CodingEditor = ({ initialCode = '', language = 'javascript', onSave }) => 
     const [isRunning, setIsRunning] = useState(false);
 
     const languages = [
-        { value: 'javascript', label: 'JavaScript' },
-        { value: 'python', label: 'Python' },
-        { value: 'cpp', label: 'C++' },
-        { value: 'java', label: 'Java' },
+        { id: 'javascript', label: 'JavaScript' },
+        { id: 'python', label: 'Python' },
+        { id: 'cpp', label: 'C++' },
+        { id: 'java', label: 'Java' },
     ];
 
     const handleRun = () => {
@@ -30,43 +31,37 @@ const CodingEditor = ({ initialCode = '', language = 'javascript', onSave }) => 
         <div className="flex flex-col h-full bg-[#1e1e1e] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
             <div className="flex items-center justify-between px-6 py-3 bg-[#252526] border-b border-[#333]">
                 <div className="flex items-center gap-4">
-                    <div className="relative dropdown dropdown-hover">
-                        <div tabIndex={0} role="button" className="bg-[#3c3c3c] text-slate-200 text-sm px-4 py-1.5 rounded-lg outline-none hover:bg-[#454545] transition-colors cursor-pointer flex items-center justify-between min-w-30">
-                            <span>{languages.find(l => l.value === lang)?.label || 'Select Language'}</span>
-                            <ChevronDown className="w-4 h-4 text-slate-400 ml-2" />
-                        </div>
-                        <ul tabIndex={0} className="dropdown-content menu bg-[#3c3c3c] rounded-lg z-100 w-full p-2 shadow-2xl border border-[#555] mt-1 text-slate-200">
-                            {languages.map(l => (
-                                <li key={l.value}>
-                                    <button
-                                        type="button"
-                                        onClick={() => setLang(l.value)}
-                                        className={`w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-[#555] ${lang === l.value ? 'bg-[#555] text-white font-bold' : ''}`}
-                                    >
-                                        {l.label}
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
+                    <div className="relative overflow-visible">
+                        <Select
+                            value={lang}
+                            options={languages}
+                            onSelect={l => setLang(l)}
+                            placeholder="Select Language"
+                            triggerClassName="h-9 bg-[#3c3c3c] border-[#444] text-slate-200 rounded-lg hover:bg-[#454545] py-2 px-3"
+                            contentClassName="bg-[#3c3c3c] border-[#555] text-slate-200 w-48 mt-1"
+                        />
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                     <Button
                         variant="ghost"
-                        className="text-slate-300 hover:text-white hover:bg-white/10 py-1.5"
+                        size="sm"
+                        icon={Play}
+                        className="text-slate-300 hover:text-white hover:bg-white/10"
                         onClick={handleRun}
                         disabled={isRunning}
+                        loading={isRunning}
                     >
-                        <Play className={`w-4 h-4 mr-2 ${isRunning ? 'animate-pulse' : ''}`} />
                         Run
                     </Button>
                     <Button
-                        variant="primary"
-                        className="py-1.5 bg-emerald-600 hover:bg-emerald-700"
+                        variant="success"
+                        size="sm"
+                        icon={Send}
+                        className="bg-emerald-600 hover:bg-emerald-700"
                         onClick={() => onSave && onSave(code)}
                     >
-                        <Send className="w-4 h-4 mr-2" />
                         Submit Code
                     </Button>
                 </div>

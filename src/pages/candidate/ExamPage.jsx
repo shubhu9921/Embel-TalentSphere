@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Webcam from 'react-webcam';
-import { ChevronLeft, ChevronRight, AlertTriangle, ShieldCheck, CheckCircle2, Users, EyeOff, Mic, MonitorX } from 'lucide-react';
+import { ChevronLeft, ChevronRight, AlertTriangle, ShieldCheck, CheckCircle2, Users, EyeOff, Mic, MonitorX, Power } from 'lucide-react';
+import Button from '../../components/Button';
 import useTimer from '../../hooks/useTimer';
 import useProctoring from '../../hooks/useProctoring';
 import CodingEditor from './CodingEditor';
@@ -139,12 +140,14 @@ const ExamPage = () => {
                     <p className="text-xl font-bold opacity-80 max-w-lg text-center leading-relaxed mb-10">
                         You switched tabs or minimized the window. This event has been recorded as a malpractice attempt.
                     </p>
-                    <button
+                    <Button
                         onClick={resetTabViolation}
-                        className="px-12 py-4 bg-white text-purple-900 font-black rounded-2xl hover:bg-slate-100 transition-all uppercase tracking-widest"
+                        variant="primary"
+                        size="lg"
+                        className="px-12 bg-white text-purple-900 border-none shadow-2xl"
                     >
                         Accept & Continue
-                    </button>
+                    </Button>
                 </div>
             )}
 
@@ -195,12 +198,14 @@ const ExamPage = () => {
             </div>
             <h2 className="text-3xl font-black text-white mb-4 uppercase tracking-tight">No Questions Available</h2>
             <p className="text-slate-400 mb-10 max-w-md font-medium">We couldn't find any questions for your selected position. Please contact HR to resolve this.</p>
-            <button
+            <Button
                 onClick={() => navigate('/login')}
-                className="px-10 py-4 bg-white text-[#002D5E] font-black rounded-2xl hover:bg-slate-100 transition-all uppercase tracking-widest shadow-2xl"
+                variant="primary"
+                size="lg"
+                className="bg-white text-[#002D5E] border-none shadow-2xl"
             >
                 Return to Login
-            </button>
+            </Button>
         </div>
     );
 
@@ -218,12 +223,14 @@ const ExamPage = () => {
                     <p className="text-xl font-bold opacity-80 max-w-lg text-center leading-relaxed mb-10">
                         You switched tabs or minimized the window. This event has been recorded as a malpractice attempt.
                     </p>
-                    <button
+                    <Button
                         onClick={resetTabViolation}
-                        className="px-12 py-4 bg-white text-purple-900 font-black rounded-2xl hover:bg-slate-100 transition-all uppercase tracking-widest"
+                        variant="primary"
+                        size="lg"
+                        className="px-12 bg-white text-purple-900 border-none shadow-2xl"
                     >
                         Accept & Continue
-                    </button>
+                    </Button>
                 </div>
             )}
 
@@ -280,12 +287,14 @@ const ExamPage = () => {
                         <span className="block text-orange-500 mt-2 font-bold italic">After 3 violations, the test will be automatically submitted.</span>
                         <span className="block text-red-400 mt-1 font-bold">Exiting fullscreen results in immediate auto-submission.</span>
                     </p>
-                    <button
+                    <Button
                         onClick={enterFullscreen}
-                        className="px-12 py-5 bg-[#ff6e00] text-white font-black rounded-2xl hover:bg-[#e05d00] transition-all uppercase tracking-[0.2em] shadow-2xl shadow-orange-500/20 active:scale-95"
+                        variant="secondary"
+                        size="lg"
+                        className="px-12 shadow-2xl shadow-orange-500/20"
                     >
                         Enable Fullscreen & Begin
-                    </button>
+                    </Button>
                 </div>
             )}
 
@@ -327,12 +336,14 @@ const ExamPage = () => {
                     </div>
                     <div className="flex items-center gap-6 pl-6 border-l border-white/10">
                         <Timer seconds={seconds} light />
-                        <button
+                        <Button
                             onClick={() => onSubmit('Manual submission')}
-                            className="px-8 py-3 font-black text-xs rounded-xl shadow-2xl shadow-orange-500/20 bg-orange-500 hover:bg-orange-600 text-white border-none uppercase tracking-widest transition-all active:scale-95"
+                            variant="secondary"
+                            size="md"
+                            className="shadow-xl shadow-orange-500/20"
                         >
                             Submit Paper
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </header >
@@ -376,18 +387,15 @@ const ExamPage = () => {
                                 </div>
                                 <div className="grid grid-cols-5 gap-3">
                                     {questions.map((q, idx) => (
-                                        <button
+                                        <Button
                                             key={q.id}
                                             onClick={() => setCurrentQuestion(idx)}
-                                            className={`h-11 rounded-xl font-black text-sm transition-all border-2 ${currentQuestion === idx
-                                                ? 'bg-[#002D5E] text-white border-[#002D5E] shadow-xl shadow-blue-500/20'
-                                                : answers[q.id]
-                                                    ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
-                                                    : 'bg-slate-50 text-slate-400 border-slate-100'
-                                                }`}
+                                            variant={currentQuestion === idx ? 'primary' : answers[q.id] ? 'success' : 'ghost'}
+                                            size="sm"
+                                            className={`h-11 font-black rounded-xl border-2 ${currentQuestion === idx ? 'shadow-xl shadow-blue-500/20' : answers[q.id] ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-100'}`}
                                         >
                                             {idx + 1}
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
                             </div>
@@ -431,10 +439,9 @@ const ExamPage = () => {
                                 {activeQuestion.type === 'mcq' ? (
                                     <div className="grid grid-cols-1 gap-5">
                                         {activeQuestion.options.map((option, idx) => (
-                                            <button
-                                                key={idx}
+                                            <div
                                                 onClick={() => handleAnswerSelect(option)}
-                                                className={`w-full p-8 text-left rounded-4xl border-2 transition-all group relative overflow-hidden ${answers[activeQuestion.id] === option
+                                                className={`w-full p-8 text-left rounded-4xl border-2 transition-all group relative overflow-hidden cursor-pointer ${answers[activeQuestion.id] === option
                                                     ? 'bg-orange-50 border-orange-500 text-slate-900 shadow-xl shadow-orange-500/10'
                                                     : 'bg-white border-slate-100 text-slate-600 hover:border-orange-200 hover:bg-slate-50/50'
                                                     }`}
@@ -450,7 +457,7 @@ const ExamPage = () => {
                                                         <CheckCircle2 className="w-6 h-6 text-orange-500" />
                                                     </div>
                                                 )}
-                                            </button>
+                                            </div>
                                         ))}
                                     </div>
                                 ) : (
@@ -466,26 +473,28 @@ const ExamPage = () => {
                         </div>
 
                         <div className="flex items-center justify-between px-4 pb-12">
-                            <button
+                            <Button
                                 onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))}
                                 disabled={currentQuestion === 0}
-                                className="px-8 py-4 bg-white text-slate-600 font-black rounded-2xl flex items-center gap-3 border border-slate-200 shadow-xl disabled:opacity-30 transition-all hover:bg-slate-50 active:scale-95"
+                                variant="outline"
+                                size="md"
+                                icon={ChevronLeft}
+                                className="bg-white text-slate-600 border-slate-200 shadow-xl"
                             >
-                                <ChevronLeft className="w-5 h-5" />
-                                <span className="uppercase tracking-widest text-xs">Previous</span>
-                            </button>
+                                Previous
+                            </Button>
 
                             <div className="flex items-center gap-2">
                                 {questions.map((_, idx) => (
-                                    <button
+                                    <div
                                         key={idx}
                                         onClick={() => setCurrentQuestion(idx)}
-                                        className={`h - 2 rounded - full transition - all duration - 500 ${currentQuestion === idx ? 'w-10 bg-orange-500' : 'w-2 bg-slate-300'} `}
-                                    ></button>
+                                        className={`h-2 rounded-full transition-all duration-500 cursor-pointer ${currentQuestion === idx ? 'w-10 bg-orange-500' : 'w-2 bg-slate-300'}`}
+                                    ></div>
                                 ))}
                             </div>
 
-                            <button
+                            <Button
                                 onClick={() => {
                                     if (currentQuestion === questions.length - 1) {
                                         onSubmit('Manual submission');
@@ -493,11 +502,13 @@ const ExamPage = () => {
                                         setCurrentQuestion(prev => Math.min(questions.length - 1, prev + 1));
                                     }
                                 }}
-                                className="px-10 py-4 bg-[#002D5E] text-white font-black rounded-2xl flex items-center gap-3 shadow-xl transition-all hover:bg-blue-900 active:scale-95 group"
+                                variant="primary"
+                                size="lg"
+                                icon={ChevronRight}
+                                className="shadow-xl"
                             >
-                                <span className="uppercase tracking-widest text-xs">{currentQuestion === questions.length - 1 ? 'Finish Assessment' : 'Next Question'}</span>
-                                <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                            </button>
+                                {currentQuestion === questions.length - 1 ? 'Finish Assessment' : 'Next Question'}
+                            </Button>
                         </div>
                     </div>
                 </main>

@@ -36,9 +36,38 @@
     6.4px 5.7px 12.9px hsl(var(--shadow-color-premium) / 0.7);
   --shadow-color: 0deg 0% 0%;
   --shadow-elevation-high: 0.2px 0.1px 0.3px hsl(var(--shadow-color) / 0.06), 1.7px 1.3px 2.8px -0.2px hsl(var(--shadow-color) / 0.08), 3px 2.4px 5.1px -0.3px hsl(var(--shadow-color) / 0.1), 4.6px 3.6px 7.8px -0.5px hsl(var(--shadow-color) / 0.12), 6.8px 5.3px 11.4px -0.7px hsl(var(--shadow-color) / 0.14), 10px 7.8px 16.8px -0.8px hsl(var(--shadow-color) / 0.16), 14.4px 11.3px 24.3px -1px hsl(var(--shadow-color) / 0.17), 20.5px 16.1px 34.6px -1.2px hsl(var(--shadow-color) / 0.19);
+  
+  --shadow-orange-glow: 0 10px 40px rgba(255, 110, 0, 0.25);
+  --shadow-orange-glow-hover: 0 20px 80px rgba(255, 110, 0, 0.35);
+  --shadow-subtle: 0 10px 40px rgba(0, 0, 0, 0.05);
+
+  /* Z-Index Layers */
+  --z-negative: -1;
+  --z-elevated: 1;
+  --z-sticky: 100;
+  --z-dropdown: 500;
+  --z-fixed: 600;
+  --z-modal: 1000;
+  --z-popover: 1100;
+  --z-toast: 2000;
+}
+
+@utility hover-lift {
+  @apply transition-all duration-500;
+  &:hover {
+    @apply -translate-y-2 shadow-[0_20px_80px_rgba(255,110,0,0.15)] border-[#e05d00] ring-1 ring-[#e05d00]/20;
+  }
 }
 
 @layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   .shadow-premium {
     --shadow-color-v: 300deg 5% 45%;
     box-shadow: 0.3px 0.2px 0.5px hsl(var(--shadow-color-v) / 0),
@@ -62,10 +91,6 @@
       transform: translateY(0) scale(1);
     }
   }
-
-  .hover-lift {
-    @apply transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_80px_rgba(255,110,0,0.15)] hover:border-[#e05d00] hover:ring-1 hover:ring-[#e05d00]/20 border border-transparent;
-  }
 }
 
 @layer base {
@@ -80,21 +105,25 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
-    @apply bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg;
+    @apply inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-black uppercase tracking-widest transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+    @apply bg-[#19325c] text-white hover:bg-[#112445] shadow-subtle;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
-    @apply bg-white text-slate-700 border border-slate-200 hover:bg-slate-50;
+    @apply inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-black uppercase tracking-widest transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+    @apply bg-[#19325c] text-white hover:bg-[#112445] shadow-orange-glow hover:shadow-orange-glow-hover;
   }
 
   .input-field {
-    @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500;
+    @apply w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold transition-all focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-[#ff6e00];
   }
 
   .card {
-    @apply bg-white rounded-2xl border border-slate-100 p-6 shadow-elevation-high hover-lift;
+    @apply bg-white rounded-2xl border border-slate-100 p-6 shadow-elevation-high transition-all duration-500;
+  }
+  
+  .card:hover {
+    @apply -translate-y-2 shadow-[0_20px_80px_rgba(255,110,0,0.15)] border-[#e05d00] ring-1 ring-[#e05d00]/20;
   }
 
   /* --- DAISYUI EMULATION: Dropdown --- */

@@ -1,17 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, ShieldCheck, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock, MapPin, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Phone, BookOpen, Briefcase, FileText, QrCode, ArrowRight, CheckCircle2, Calendar, GraduationCap, Award, AlertCircle, History, Clock, ChevronRight, ChevronDown, Lock, MapPin, Eye, EyeOff } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import ApiService from '../../services/ApiService';
+import { geoData } from '../../utils/geoData';
+import Button from '../../components/Button';
+import Select from '../../components/Select';
+import Autocomplete from '../../components/Autocomplete';
 
 const Register = () => {
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
         defaultValues: {
             activeBacklogs: 'no',
-            experienceType: 'fresher'
+            experienceType: 'fresher',
+            country: 'India',
+            state: '',
+            city: '',
+            position: ''
         }
     });
+
+    // Register custom fields manually
+    useEffect(() => {
+        register('country', { required: 'Country is required' });
+        register('state', { required: 'State is required' });
+        register('city', { required: 'City is required' });
+        register('position', { required: 'Target Position is required' });
+    }, [register]);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [step, setStep] = useState(1);
@@ -19,8 +35,18 @@ const Register = () => {
     const [submitting, setSubmitting] = useState(false);
     const [candidateData, setCandidateData] = useState(null);
     const [vacancies, setVacancies] = useState([]);
-    const [expDropdownOpen, setExpDropdownOpen] = useState(false);
-    const [posDropdownOpen, setPosDropdownOpen] = useState(false);
+
+    const watchCountry = watch('country');
+    const watchState = watch('state');
+    const watchCity = watch('city');
+
+    const allCountries = geoData.map(c => c.country);
+
+    const statesForCountry = geoData.find(c => c.country.toLowerCase() === watchCountry?.toLowerCase())?.states || [];
+    const filteredStates = statesForCountry;
+
+    const citiesForState = statesForCountry.find(s => s.name.toLowerCase() === watchState?.toLowerCase())?.cities || [];
+    const filteredCities = citiesForState;
 
     const preSelectedPosition = searchParams.get('position');
     const expType = watch('experienceType');
@@ -137,10 +163,15 @@ const Register = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button onClick={nextStep} className="w-full max-w-sm mx-auto py-5 text-lg font-black rounded-2xl shadow-2xl shadow-orange-500/20 flex items-center justify-center gap-3 bg-[#ff6e00] hover:bg-[#e05d00] text-white border-none uppercase tracking-widest transition-all active:scale-95 group">
+                            <Button 
+                                onClick={nextStep} 
+                                variant="secondary"
+                                size="lg"
+                                icon={ArrowRight}
+                                className="w-full max-w-sm mx-auto shadow-2xl shadow-orange-500/30"
+                            >
                                 Start Application
-                                <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-1" />
-                            </button>
+                            </Button>
                         </div>
                     ) : step === 2 ? (
                         <form onSubmit={handleSubmit(onSubmit)} className="p-12 space-y-10 animate-in slide-in-from-right-8 fade-in duration-500">
@@ -173,7 +204,7 @@ const Register = () => {
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <Phone className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
                                             </div>
-                                            <input {...register('phone', { required: 'Phone is mandatory', pattern: { value: /^[0-9]{10}$/, message: 'Must be exactly 10 digits' } })} placeholder="0000000000" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
+                                            <input {...register('phone', { required: 'Phone is mandatory', pattern: { value: /^\d{10}$/, message: 'Must be exactly 10 digits' } })} placeholder="0000000000" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
                                         </div>
                                         {errors.phone && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.phone.message}</p>}
                                     </div>
@@ -193,45 +224,80 @@ const Register = () => {
                                                 <Lock className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
                                             </div>
                                             <input type={showPassword ? "text" : "password"} {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Min 6 characters' } })} placeholder="••••••••" className="block w-full pl-11 pr-12 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
-                                            <button
+                                            <Button
                                                 type="button"
+                                                variant="ghost"
+                                                size="sm"
                                                 onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-slate-500 transition-colors cursor-pointer"
-                                            >
-                                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                                            </button>
+                                                icon={showPassword ? EyeOff : Eye}
+                                                className="absolute inset-y-0 right-0 h-full pr-4 text-slate-300 hover:text-slate-500 bg-transparent border-none"
+                                            />
                                         </div>
                                         {errors.password && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.password.message}</p>}
                                     </div>
-                                    <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Country</label>
-                                        <div className="relative group/field">
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <MapPin className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
-                                            </div>
-                                            <input {...register('country', { required: 'Country is mandatory' })} placeholder="India" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
-                                        </div>
-                                        {errors.country && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.country.message}</p>}
+                                    <div className="space-y-0 relative z-[60]">
+                                        <Autocomplete
+                                            label="Country"
+                                            value={watchCountry}
+                                            options={allCountries}
+                                            onChange={(val) => {
+                                                setValue('country', val, { shouldValidate: true });
+                                                // Clear dependents if the input doesn't exactly match a valid country
+                                                if (!geoData.some(c => c.country.toLowerCase() === val.toLowerCase())) {
+                                                    setValue('state', '');
+                                                    setValue('city', '');
+                                                }
+                                            }}
+                                            onSelect={(val) => {
+                                                setValue('country', val, { shouldValidate: true });
+                                                setValue('state', '');
+                                                setValue('city', '');
+                                            }}
+                                            placeholder="Search Country..."
+                                            icon={MapPin}
+                                            error={errors.country?.message}
+                                            required
+                                            strict={true}
+                                        />
                                     </div>
-                                    <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">State</label>
-                                        <div className="relative group/field">
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <MapPin className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
-                                            </div>
-                                            <input {...register('state', { required: 'State is mandatory' })} placeholder="Maharashtra" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
-                                        </div>
-                                        {errors.state && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.state.message}</p>}
+                                    <div className="space-y-0 relative z-[50]">
+                                        <Autocomplete
+                                            label="State"
+                                            value={watchState}
+                                            options={filteredStates.map(s => s.name)}
+                                            onChange={(val) => {
+                                                setValue('state', val, { shouldValidate: true });
+                                                // Clear city if state is not a valid match
+                                                if (!filteredStates.some(s => s.name.toLowerCase() === val.toLowerCase())) {
+                                                    setValue('city', '');
+                                                }
+                                            }}
+                                            onSelect={(val) => {
+                                                setValue('state', val, { shouldValidate: true });
+                                                setValue('city', '');
+                                            }}
+                                            placeholder={watchCountry ? "Search State..." : "Select Country First"}
+                                            icon={MapPin}
+                                            error={errors.state?.message}
+                                            required
+                                            disabled={!watchCountry}
+                                            strict={true}
+                                        />
                                     </div>
-                                    <div className="space-y-2 group">
-                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">City</label>
-                                        <div className="relative group/field">
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <MapPin className="h-5 w-5 text-slate-300 group-focus-within/field:text-[#ff6e00] transition-colors" />
-                                            </div>
-                                            <input {...register('city', { required: 'City is mandatory' })} placeholder="Pune" className="block w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
-                                        </div>
-                                        {errors.city && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.city.message}</p>}
+                                    <div className="space-y-0 relative z-[40]">
+                                        <Autocomplete
+                                            label="City"
+                                            value={watchCity}
+                                            options={filteredCities}
+                                            onChange={(val) => setValue('city', val, { shouldValidate: true })}
+                                            onSelect={(val) => setValue('city', val, { shouldValidate: true })}
+                                            placeholder={watchState ? "Search City..." : "Select State First"}
+                                            icon={MapPin}
+                                            error={errors.city?.message}
+                                            required
+                                            disabled={!watchState}
+                                            strict={true}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -309,30 +375,19 @@ const Register = () => {
                                 <h3 className="text-[10px] font-black text-[#ff6e00] uppercase tracking-[0.2em] border-b border-slate-100 pb-4">Professional Details</h3>
 
                                 {/* Experience Type + Total Experience in 2-col grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-40">
-                                    <div className="space-y-2 group w-full flex flex-col relative">
-                                        <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Experience Type</label>
-                                        <div
-                                            className="w-full relative"
-                                            onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setExpDropdownOpen(false); }}
-                                        >
-                                            <input type="hidden" {...register('experienceType')} />
-                                            <div
-                                                role="button"
-                                                onClick={() => setExpDropdownOpen(o => !o)}
-                                                tabIndex={0}
-                                                className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold tracking-widest cursor-pointer"
-                                            >
-                                                <span className="text-slate-900">{expType === 'experienced' ? 'Experienced Professional' : 'Fresher / Student'}</span>
-                                                <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${expDropdownOpen ? 'rotate-180' : ''}`} />
-                                            </div>
-                                            {expDropdownOpen && (
-                                                <ul className="absolute top-full left-0 mt-2 w-full menu bg-white rounded-2xl z-[999] p-2 shadow-elevation-high border border-slate-100">
-                                                    <li><a onMouseDown={(e) => { e.preventDefault(); setValue('experienceType', 'fresher'); setExpDropdownOpen(false); }} className={expType === 'fresher' ? 'active' : ''}>Fresher / Student</a></li>
-                                                    <li><a onMouseDown={(e) => { e.preventDefault(); setValue('experienceType', 'experienced'); setExpDropdownOpen(false); }} className={expType === 'experienced' ? 'active' : ''}>Experienced Professional</a></li>
-                                                </ul>
-                                            )}
-                                        </div>
+                                    <div className="space-y-0 relative z-[10]">
+                                        <Select 
+                                            label="Experience Type"
+                                            value={expType}
+                                            options={[
+                                                { id: 'fresher', label: 'Fresher / Student' },
+                                                { id: 'experienced', label: 'Experienced Professional' }
+                                            ]}
+                                            onSelect={(val) => setValue('experienceType', val)}
+                                            placeholder="Select Type..."
+                                            error={errors.experienceType?.message}
+                                            required
+                                        />
                                     </div>
                                     {expType === 'experienced' && (
                                         <div className="space-y-2 animate-in fade-in slide-in-from-left-4 group">
@@ -345,42 +400,22 @@ const Register = () => {
                                             </div>
                                         </div>
                                     )}
-                                </div>
 
                                 {/* Target Position — React-controlled dropdown, not DaisyUI CSS-based */}
-                                <div className="space-y-2 group relative z-30">
-                                    <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Target Position</label>
-                                    <div
-                                        className="w-full relative"
-                                        onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setPosDropdownOpen(false); }}
-                                    >
-                                        <input type="hidden" {...register('position', { required: 'Target position is required' })} />
-                                        <div
-                                            role="button"
-                                            tabIndex={!!preSelectedPosition ? -1 : 0}
-                                            onClick={() => { if (!preSelectedPosition) setPosDropdownOpen(o => !o); }}
-                                            className={`w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold cursor-pointer ${!!preSelectedPosition ? 'opacity-50 pointer-events-none' : ''}`}
-                                        >
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <Briefcase className="h-5 w-5 text-slate-300" />
-                                            </div>
-                                            <span className={watchPosition ? 'text-slate-900 truncate pr-4' : 'text-slate-400 truncate pr-4'}>
-                                                {watchPosition ? (vacancies.find(v => v.id === watchPosition)?.title || watchPosition) : 'Select role...'}
-                                            </span>
-                                            <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${posDropdownOpen ? 'rotate-180' : ''}`} />
-                                        </div>
-                                        {posDropdownOpen && (
-                                            <ul className="absolute top-full left-0 mt-2 w-full menu bg-white rounded-2xl z-[999] p-2 shadow-elevation-high border border-slate-100">
-                                                <li><a onMouseDown={(e) => { e.preventDefault(); setValue('position', '', { shouldValidate: true }); setPosDropdownOpen(false); }} className={!watchPosition ? 'active text-slate-400' : 'text-slate-400'}>Select role...</a></li>
-                                                {vacancies.map(v => (
-                                                    <li key={v.id}>
-                                                        <a onMouseDown={(e) => { e.preventDefault(); setValue('position', v.id, { shouldValidate: true }); setPosDropdownOpen(false); }} className={watchPosition === v.id ? 'active' : ''}>{v.title}</a>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                    </div>
-                                    {errors.position && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.position.message}</p>}
+                                <div className="space-y-0 relative z-[5]">
+                                    <Select 
+                                        label="Target Position"
+                                        value={watchPosition}
+                                        options={vacancies.map(v => ({ id: v.id, label: v.title }))}
+                                        onSelect={(val) => {
+                                            if (!preSelectedPosition) setValue('position', val, { shouldValidate: true });
+                                        }}
+                                        placeholder="Select role..."
+                                        icon={Briefcase}
+                                        error={errors.position?.message}
+                                        required
+                                        disabled={!!preSelectedPosition}
+                                    />
                                 </div>
                             </div>
 
@@ -401,9 +436,15 @@ const Register = () => {
                                 {errors.resume && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.resume.message}</p>}
                             </div>
 
-                            <button type="submit" disabled={submitting} className="w-full py-5 text-lg font-black rounded-2xl shadow-2xl shadow-orange-500/25 bg-[#ff6e00] hover:bg-[#e05d00] text-white border-none uppercase tracking-[0.15em] transition-all active:scale-[0.98]">
-                                {submitting ? 'Creating Profile...' : 'Submit Application'}
-                            </button>
+                            <Button 
+                                type="submit" 
+                                variant="secondary"
+                                size="lg"
+                                loading={submitting}
+                                className="w-full shadow-2xl shadow-orange-500/30"
+                            >
+                                Submit Application
+                            </Button>
                         </form>
                     ) : (
                         <div className="p-16 text-center space-y-12 animate-in fade-in zoom-in-95 duration-500">
@@ -442,9 +483,15 @@ const Register = () => {
                                     </div>
                                 </div>
 
-                                <button onClick={() => navigate('/')} className="w-full py-5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black uppercase tracking-widest shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2">
-                                    Back to Home <ChevronRight className="w-5 h-5" />
-                                </button>
+                                <Button 
+                                    onClick={() => navigate('/')} 
+                                    variant="primary"
+                                    size="lg"
+                                    icon={ChevronRight}
+                                    className="w-full shadow-xl"
+                                >
+                                    Back to Home
+                                </Button>
                             </div>
                         </div>
                     )}

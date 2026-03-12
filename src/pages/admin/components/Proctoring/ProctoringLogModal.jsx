@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Users, History, CheckCircle2, ExternalLink } from 'lucide-react';
 import Modal from '../../../../components/Modal';
+import Button from '../../../../components/Button';
 
 const ProctoringLogModal = ({ isOpen, onClose, candidate }) => {
     if (!candidate) return null;
@@ -39,13 +40,13 @@ const ProctoringLogModal = ({ isOpen, onClose, candidate }) => {
                                             className="w-full rounded-2xl border-4 border-slate-50 shadow-lg group-hover/img:scale-[1.02] transition-transform duration-500"
                                         />
                                         <div className="absolute top-4 right-4 flex gap-2 translate-y-2 opacity-0 group-hover/img:translate-y-0 group-hover/img:opacity-100 transition-all">
-                                            <button
+                                            <Button
                                                 onClick={() => window.open(log.evidence, '_blank', 'noopener,noreferrer')}
-                                                aria-label="View Full Evidence"
-                                                className="p-2 bg-black/60 backdrop-blur-md rounded-xl text-white hover:bg-[#ff6e00] transition-colors"
-                                            >
-                                                <ExternalLink size={16} />
-                                            </button>
+                                                variant="ghost"
+                                                size="xs"
+                                                icon={ExternalLink}
+                                                className="bg-black/60 backdrop-blur-md text-white hover:bg-[#ff6e00] rounded-xl"
+                                            />
                                         </div>
                                     </div>
                                 )}
@@ -72,12 +73,13 @@ const ProctoringLogModal = ({ isOpen, onClose, candidate }) => {
                     <History size={20} className="text-slate-400" />
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Auto-Refreshed via Embel AI Proctoring</span>
                 </div>
-                <button
-                    className="px-8 py-3 bg-orange-600 text-white font-black rounded-xl hover:bg-orange-700 transition-all uppercase tracking-widest text-xs"
+                <Button
+                    variant="secondary"
+                    size="md"
                     onClick={onClose}
                 >
                     Done Reviewing
-                </button>
+                </Button>
             </div>
         </Modal>
     );

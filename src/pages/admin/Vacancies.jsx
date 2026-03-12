@@ -108,7 +108,7 @@ const Vacancies = () => {
                             setIsModalOpen(true);
                         }}
                         icon={Plus}
-                        className="rounded-xl shadow-orange-500/20 shadow-2xl"
+                        variant="secondary"
                     >
                         Post New Role
                     </Button>

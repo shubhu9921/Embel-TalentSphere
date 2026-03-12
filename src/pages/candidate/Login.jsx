@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import ApiService from '../../services/ApiService';
 import { formatUserName } from '../../utils/formatters';
+import Button from '../../components/Button';
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -125,30 +126,28 @@ const Login = () => {
                                 className="block w-full pl-11 pr-12 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner"
                                 placeholder="••••••••"
                             />
-                            <button
+                            <Button
                                 type="button"
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-300 hover:text-slate-500 transition-colors cursor-pointer"
-                            >
-                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                            </button>
+                                icon={showPassword ? EyeOff : Eye}
+                                className="absolute inset-y-0 right-0 h-full pr-4 text-slate-300 hover:text-slate-500 bg-transparent border-none"
+                            />
                         </div>
                         {errors.password && <p className="text-[10px] font-bold text-red-400 px-1 mt-1 uppercase tracking-wider">{errors.password.message}</p>}
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
-                        disabled={submitting}
-                        className="w-full flex items-center justify-center gap-3 py-4 px-4 border border-transparent rounded-2xl shadow-2xl shadow-orange-500/25 text-sm font-black text-white bg-[#ff6e00] hover:bg-[#e05d00] focus:outline-none focus:ring-4 focus:ring-orange-500/20 disabled:opacity-70 disabled:cursor-not-allowed transition-all active:scale-[0.98] group/btn"
+                        variant="secondary"
+                        size="lg"
+                        loading={submitting}
+                        icon={ArrowRight}
+                        className="w-full shadow-2xl shadow-orange-500/30"
                     >
-                        {submitting ? (
-                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        ) : (
-                            <span className="flex items-center gap-2">
-                                SIGN IN <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                            </span>
-                        )}
-                    </button>
+                        SIGN IN
+                    </Button>
                 </form>
 
                 <div className="mt-10 text-center text-xs font-bold text-slate-400">

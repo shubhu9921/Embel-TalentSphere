@@ -156,7 +156,7 @@
         "flex: true"
       ],
       "correct": "display: flex",
-      "selected": true
+      "selected": false
     },
     {
       "id": 6,
@@ -501,7 +501,7 @@
         "A security protocol"
       ],
       "correct": "A promise-based Node.js ORM for Postgres, MySQL, etc.",
-      "selected": true
+      "selected": false
     },
     {
       "id": 29,
@@ -552,7 +552,7 @@
       "password": "admin123",
       "role": "superadmin",
       "name": "Alex Rivera",
-      "lastLogin": "2026-03-11T06:56:54.016Z"
+      "lastLogin": "2026-03-12T05:03:50.490Z"
     },
     {
       "name": "test",
@@ -562,7 +562,7 @@
       "domain": "frontend",
       "createdAt": "2026-03-10T05:44:15.761Z",
       "id": 2,
-      "lastLogin": "2026-03-11T07:33:58.833Z"
+      "lastLogin": "2026-03-12T04:42:18.306Z"
     },
     {
       "name": "hr manager",
@@ -572,9 +572,10 @@
       "domain": "",
       "createdAt": "2026-03-10T05:52:31.326Z",
       "id": 3,
-      "lastLogin": "2026-03-11T07:34:59.255Z"
+      "lastLogin": "2026-03-12T04:42:54.968Z"
     }
   ],
+  "activities": [],
   "settings": {
     "projectName": "Embel Talentry",
     "theme": "Blue & Orange"

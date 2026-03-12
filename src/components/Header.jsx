@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Bell, User, Settings as SettingsIcon } from 'lucide-react';
+import Button from './Button';
+import Dropdown from './Dropdown';
 
 const Header = ({ role }) => {
     const navigate = useNavigate();
-    const [showNotifications, setShowNotifications] = useState(false);
-    const notificationsRef = useRef(null);
     const getInitialUser = () => {
         try {
             return JSON.parse(localStorage.getItem('admin_user')) || { name: 'Alex Rivera', role: 'superadmin' };
@@ -16,22 +16,6 @@ const Header = ({ role }) => {
     };
     const user = getInitialUser();
     const userInitials = (user.name || 'AR').substring(0, 2).toUpperCase();
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
-                setShowNotifications(false);
-            }
-        };
-
-        if (showNotifications) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [showNotifications]);
-
 
     const getNotifications = () => {
         switch (role) {
@@ -60,8 +44,19 @@ const Header = ({ role }) => {
         navigate(settingsPath);
     };
 
+    const notificationTrigger = (
+        <Button
+            variant="ghost"
+            size="sm"
+            icon={Bell}
+            className="p-2 rounded-full text-slate-600 hover:text-[#ff6e00] transition relative group/icon bg-transparent border-none focus:ring-0"
+        >
+            <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
+        </Button>
+    );
+
     return (
-        <header className="h-16 bg-white/50 backdrop-blur-xl flex items-center px-6 sticky top-0 z-20 justify-between transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.15)] border-b border-gray-100">
+        <header className="h-16 bg-white/50 backdrop-blur-xl flex items-center px-6 sticky top-0 z-20 justify-between transition-all duration-300 shadow-[0_4px_24px_rgba(0,0,0,0.15)] border-b border-gray-100 overflow-visible">
             <div className="flex items-center gap-4 flex-1">
                 <div className="relative w-full max-w-md group">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -75,50 +70,44 @@ const Header = ({ role }) => {
                 </div>
             </div>
 
-            <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                    <div className="relative" ref={notificationsRef}>
-                        <button 
-                            onClick={() => setShowNotifications(!showNotifications)}
-                            className="p-2 rounded-full text-slate-600 hover:text-[#ff6e00] transition relative group/icon"
-                        >
-                            <Bell size={20} className="text-slate-600 group-hover/icon:text-[#ff6e00]" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
-                        </button>
-
-                        {showNotifications && (
-                            <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 py-4 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                                <div className="px-4 mb-3 flex items-center justify-between">
-                                    <h4 className="font-bold text-[#19325c] text-sm">Notifications</h4>
-                                    <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">New</span>
-                                </div>
-                                <div className="max-h-[300px] overflow-y-auto px-2">
-                                    {notifications.map(n => (
-                                        <div key={n.id} className="p-3 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer group mb-1">
-                                            <p className="text-xs font-semibold text-slate-700 group-hover:text-[#ff6e00] leading-relaxed transition-colors">{n.text}</p>
-                                            <p className="text-[10px] text-slate-400 mt-1 font-medium">{n.time}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="px-4 mt-3 pt-3 border-t border-slate-50">
-                                    <button 
-                                        onClick={() => setShowNotifications(false)}
-                                        aria-label="Dismiss all notifications"
-                                        className="text-[11px] font-bold text-[#19325c] hover:text-[#ff6e00] transition-colors uppercase tracking-widest block w-full text-center"
-                                    >
-                                        Dismiss All
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <button 
-                        onClick={handleSettingsClick}
-                        className="p-2 rounded-full text-slate-600 hover:text-[#ff6e00] transition-colors group/icon"
+            <div className="flex items-center gap-4 overflow-visible">
+                <div className="flex items-center gap-1 overflow-visible">
+                    <Dropdown 
+                        trigger={notificationTrigger} 
+                        align="right" 
+                        closeOnClick={false}
+                        contentClassName="w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 py-4 mt-2 origin-top-right overflow-hidden"
                     >
-                        <SettingsIcon size={20} className="text-slate-600 group-hover/icon:text-[#ff6e00]" />
-                    </button>
+                        <div className="px-4 mb-3 flex items-center justify-between">
+                            <h4 className="font-bold text-[#19325c] text-sm">Notifications</h4>
+                            <span className="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">New</span>
+                        </div>
+                        <div className="max-h-75 overflow-y-auto px-2 scrollbar-hide">
+                            {notifications.map(n => (
+                                <div key={n.id} className="p-3 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer group mb-1">
+                                    <p className="text-xs font-semibold text-slate-700 group-hover:text-[#ff6e00] leading-relaxed transition-colors">{n.text}</p>
+                                    <p className="text-[10px] text-slate-400 mt-1 font-medium">{n.time}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="px-4 mt-3 pt-3 border-t border-slate-50">
+                            <Button
+                                variant="ghost"
+                                size="xs"
+                                className="text-[11px] font-black text-[#19325c] hover:text-[#ff6e00] transition-colors uppercase tracking-widest block w-full text-center border-none"
+                            >
+                                Mark all as read
+                            </Button>
+                        </div>
+                    </Dropdown>
+
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleSettingsClick}
+                        icon={SettingsIcon}
+                        className="p-2 rounded-full text-slate-600 hover:text-[#ff6e00] transition-colors group/icon bg-transparent border-none"
+                    />
                 </div>
 
                 <div className="h-6 w-px bg-slate-200 mx-1"></div>

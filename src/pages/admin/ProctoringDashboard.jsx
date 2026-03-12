@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldAlert, Search, Filter } from 'lucide-react';
 import ApiService from '../../services/ApiService';
+import Button from '../../components/Button';
 import Loader from '../../components/Loader';
 import PageHeader from '../../components/PageHeader';
 
@@ -70,14 +71,13 @@ const ProctoringDashboard = () => {
                                 className="pl-12 pr-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-500/20 w-64 font-bold text-slate-700 transition-all shadow-sm"
                             />
                         </div>
-                        <button
+                        <Button
                             onClick={() => console.log('Filter clicked')}
-                            className="p-3.5 bg-slate-50 text-slate-600 rounded-2xl hover:bg-slate-100 transition-all border border-slate-100 shadow-sm"
-                            title="Filter candidates"
-                            aria-label="Filter candidates"
-                        >
-                            <Filter size={20} />
-                        </button>
+                            variant="ghost"
+                            size="md"
+                            icon={Filter}
+                            className="bg-slate-50 border-slate-100 shadow-sm"
+                        />
                     </div>
                 }
             />

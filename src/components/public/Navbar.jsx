@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Menu, X, ArrowRight } from 'lucide-react';
+import Button from '../Button';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -65,12 +66,13 @@ const Navbar = () => {
                 </div>
 
                 {/* Mobile Toggle */}
-                <button
-                    className="md:hidden p-2 text-white"
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    icon={mobileMenuOpen ? X : Menu}
+                    className="md:hidden p-2 text-white border-none bg-transparent"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                >
-                    {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-                </button>
+                />
             </div>
 
             {/* Mobile Menu */}

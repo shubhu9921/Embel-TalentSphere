@@ -12,27 +12,37 @@ const CommunicationPortal = () => {
     const [selectedCandidates, setSelectedCandidates] = useState([]);
     const [sending, setSending] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
+    const [activities, setActivities] = useState([]);
+    
+    // Dynamic Fields
+    const [assessmentDate, setAssessmentDate] = useState('');
+    const [assessmentTime, setAssessmentTime] = useState('');
+    const [interviewRound, setInterviewRound] = useState('Technical');
 
     useEffect(() => {
-        const fetchCandidates = async () => {
+        const fetchData = async () => {
             try {
-                const data = await ApiService.get('/candidates');
-                setCandidates(data);
+                const [candData, actData] = await Promise.all([
+                    ApiService.get('/candidates'),
+                    ApiService.get('/activities?_sort=timestamp&_order=desc&_limit=5')
+                ]);
+                setCandidates(candData);
+                setActivities(actData);
             } catch (error) {
-                console.error('Error fetching candidates:', error);
+                console.error('Error fetching portal data:', error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchCandidates();
+        fetchData();
     }, []);
 
     const filteredCandidates = React.useMemo(() => {
         switch (selectedType) {
             case 'invite':
-                return candidates.filter(c => c.status === 'applied');
+                return candidates.filter(c => c.status === 'registered');
             case 'shortlist':
-                return candidates.filter(c => c.status === 'shortlisted' || c.status === 'interview scheduled');
+                return candidates.filter(c => c.examScore !== null && c.examScore >= 40); // Assuming 40 is pass mark
             case 'rejection':
                 return candidates.filter(c => c.status === 'rejected' || c.status === 'not selected');
             default:
@@ -61,28 +71,71 @@ const CommunicationPortal = () => {
 
     const emailTemplates = {
         invite: {
-            subject: 'Action Required: Assessment Invitation from Embel Talentry',
-            body: 'Dear Candidate, We are pleased to invite you to take our technical assessment for the position you applied for...'
+            subject: 'Assessment Invitation: {company_name}',
+            body: 'Dear {candidate_name}, You are invited to participate in the assessment scheduled on {assessment_date}. Please use the direct login link if you have already registered.'
         },
         shortlist: {
-            subject: 'Next Round: Your Technical Interview has been scheduled',
-            body: 'Congratulations! Your performance in the initial screening was impressive. We have scheduled your F2F interview...'
+            subject: 'Shortlisted for {interview_round} Round',
+            body: 'Congratulations {candidate_name}! You have been shortlisted for the {interview_round} interview round. Our team will contact you soon.'
         },
         rejection: {
-            subject: 'Update on your application with Embel',
-            body: 'Thank you for your interest in Embel. After careful review, we have decided not to move forward with your application...'
+            subject: 'Application Status: {company_name}',
+            body: 'Thank you {candidate_name} for your interest in {company_name}. After careful review, we have decided not to move forward with your application at this time.'
         }
+    };
+
+    const getPreviewContent = (text) => {
+        if (!text) return '';
+        return text
+            .replace(/{candidate_name}/g, 'John Doe')
+            .replace(/{assessment_date}/g, assessmentDate ? `${assessmentDate} ${assessmentTime}` : '[Select Date/Time]')
+            .replace(/{interview_round}/g, interviewRound)
+            .replace(/{company_name}/g, 'Embel Talentry');
     };
 
     const handleSendBulk = async () => {
         if (selectedCandidates.length === 0) return;
         setSending(true);
-        // Simulate background processing
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setSending(false);
-        setSuccessMsg(`Success! Notifications have been queued for ${selectedCandidates.length} candidates.`);
-        setSelectedCandidates([]); // Clear selection after sending
-        setTimeout(() => setSuccessMsg(''), 5000);
+        try {
+            const template = emailTemplates[selectedType];
+            const timestamp = new Date().toISOString();
+            
+            // Log activity for each candidate or as a batch?
+            // User requested: "Sent Shortlist email to X candidates" or "Sent Assessment Invite to candidate name"
+            let logMessage = '';
+            if (selectedCandidates.length === 1) {
+                const cand = candidates.find(c => c.id === selectedCandidates[0]);
+                const typeLabel = selectedType.charAt(0).toUpperCase() + selectedType.slice(1);
+                logMessage = `Sent ${typeLabel} email to ${cand?.name || 'Unknown Candidate'}`;
+            } else {
+                const typeLabel = selectedType.charAt(0).toUpperCase() + selectedType.slice(1);
+                logMessage = `Sent ${typeLabel} email to ${selectedCandidates.length} candidates`;
+            }
+
+            await ApiService.post('/activities', {
+                type: selectedType,
+                count: selectedCandidates.length,
+                message: logMessage,
+                timestamp: timestamp
+            });
+
+            // Simulate actual email sending
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            setSuccessMsg(`Success! Notifications have been sent to ${selectedCandidates.length} candidates.`);
+            setSelectedCandidates([]);
+            
+            // Refresh activities
+            const actData = await ApiService.get('/activities?_sort=timestamp&_order=desc&_limit=5');
+            setActivities(actData);
+            
+            setTimeout(() => setSuccessMsg(''), 5000);
+        } catch (error) {
+            console.error('Error sending emails:', error);
+            alert('Failed to send notifications.');
+        } finally {
+            setSending(false);
+        }
     };
 
     if (loading) return <div className="h-[60vh] flex items-center justify-center"><Loader size="lg" /></div>;
@@ -106,35 +159,46 @@ const CommunicationPortal = () => {
                         <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 px-1">Template Selector</h3>
                         <div className="space-y-3">
                             {Object.keys(emailTemplates).map((type) => (
-                                <button
+                                <Button
                                     key={type}
+                                    variant={selectedType === type ? 'secondary' : 'ghost'}
+                                    size="md"
+                                    icon={ChevronRight}
                                     onClick={() => setSelectedType(type)}
-                                    className={`w-full p-4 rounded-2xl flex items-center justify-between transition-all border hover:scale-[1.02] active:scale-[0.98] ${selectedType === type ? 'bg-[#ff6e00] text-white border-[#ff6e00] shadow-lg shadow-[#ff6e00]/20' : 'bg-white text-slate-600 border-slate-100 hover:border-[#ff6e00] hover:text-[#ff6e00] hover:shadow-md'
-                                        }`}
+                                    className={`w-full justify-between hover:scale-[1.02] shadow-lg ${selectedType === type ? 'shadow-orange-500/20' : 'border-slate-100 hover:border-[#ff6e00]'}`}
                                 >
-                                    <span className="text-xs font-black uppercase tracking-widest">{type}</span>
-                                    <ChevronRight className="w-4 h-4 opacity-50" />
-                                </button>
+                                    {type}
+                                </Button>
                             ))}
                         </div>
                     </Card>
 
-                    <Card className="p-6 border-none bg-slate-900 text-white shadow-xl shadow-slate-900/40">
-                        <div className="flex items-center gap-3 mb-6">
+                    <Card className="p-6 border-none bg-slate-900 text-white shadow-xl shadow-slate-900/40 overflow-hidden relative">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-[#ff6e00]/10 rounded-full -translate-y-12 translate-x-12"></div>
+                        <div className="flex items-center gap-3 mb-6 relative z-10">
                             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                                 <History className="w-5 h-5 text-[#ff6e00]" />
                             </div>
                             <h3 className="text-xs font-black uppercase tracking-widest text-[#ff6e00]">Recent Activity</h3>
                         </div>
-                        <div className="space-y-4">
-                            <div className="pb-4 border-b border-white/5">
-                                <p className="text-[11px] font-bold text-slate-500">TODAY, 10:45 AM</p>
-                                <p className="text-xs font-medium mt-1 text-slate-300">Sent <span className="text-[#ff6e00] font-bold">Shortlist</span> email to 12 candidates</p>
-                            </div>
-                            <div>
-                                <p className="text-[11px] font-bold text-slate-500">YESTERDAY, 04:20 PM</p>
-                                <p className="text-xs font-medium mt-1 text-slate-300">Sent <span className="text-orange-400 font-bold">Assessment</span> invite to Shubham K.</p>
-                            </div>
+                        <div className="space-y-4 relative z-10">
+                            {activities.length > 0 ? activities.map((act, i) => (
+                                <div key={i} className={`pb-4 ${i !== activities.length - 1 ? 'border-b border-white/5' : ''}`}>
+                                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">
+                                        {new Date(act.timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                    </p>
+                                    <p className="text-xs font-medium mt-1 text-slate-300">
+                                        {act.message.split(new RegExp(`(${act.type})`, 'i')).map((part, index) => 
+                                            part.toLowerCase() === act.type.toLowerCase() ? 
+                                            <span key={index} className="text-[#ff6e00] font-bold">{part}</span> : part
+                                        )}
+                                    </p>
+                                </div>
+                            )) : (
+                                <div className="py-4 text-center">
+                                    <p className="text-xs text-slate-500 italic">No recent activity</p>
+                                </div>
+                            )}
                         </div>
                     </Card>
                 </div>
@@ -148,47 +212,94 @@ const CommunicationPortal = () => {
                     )}
 
                     <Card className="p-8 border-none ring-1 ring-slate-100 h-full">
-                        <div className="mb-8 p-6 bg-orange-50/30 rounded-3xl border border-orange-100/50">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center border border-orange-100 shadow-sm">
-                                    <FileText className="w-4 h-4 text-[#ff6e00]" />
+                        <div className="mb-8 space-y-6">
+                            {(selectedType === 'invite' || selectedType === 'shortlist') && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-left-4 duration-500">
+                                    {selectedType === 'invite' ? (
+                                        <>
+                                            <div className="space-y-2">
+                                                <label htmlFor="assessment-date" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Assessment Date</label>
+                                                <input 
+                                                    id="assessment-date"
+                                                    type="date" 
+                                                    value={assessmentDate}
+                                                    onChange={(e) => setAssessmentDate(e.target.value)}
+                                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] outline-none transition-all"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label htmlFor="assessment-time" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Assessment Time</label>
+                                                <input 
+                                                    id="assessment-time"
+                                                    type="time" 
+                                                    value={assessmentTime}
+                                                    onChange={(e) => setAssessmentTime(e.target.value)}
+                                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] outline-none transition-all"
+                                                />
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="space-y-2 col-span-2">
+                                            <label htmlFor="interview-round" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Interview Round</label>
+                                            <select 
+                                                id="interview-round"
+                                                value={interviewRound}
+                                                onChange={(e) => setInterviewRound(e.target.value)}
+                                                className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#ff6e00]/20 focus:border-[#ff6e00] outline-none transition-all appearance-none cursor-pointer"
+                                            >
+                                                <option value="Technical">Technical Interview</option>
+                                                <option value="HR">HR Interview</option>
+                                                <option value="Face-to-Face">Face-to-Face Interview</option>
+                                            </select>
+                                        </div>
+                                    )}
                                 </div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Live Template Preview</span>
+                            )}
+
+                            <div className="p-6 bg-orange-50/30 rounded-3xl border border-orange-100/50">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center border border-orange-100 shadow-sm">
+                                        <FileText className="w-4 h-4 text-[#ff6e00]" />
+                                    </div>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Live Template Preview</span>
+                                </div>
+                                <h2 className="text-xl font-black text-[#19325c] mb-2">{getPreviewContent(emailTemplates[selectedType].subject)}</h2>
+                                <div className="h-1 bg-[#ff6e00] w-12 rounded-full mb-4"></div>
+                                <p className="text-sm text-slate-500 leading-relaxed font-medium">
+                                    {getPreviewContent(emailTemplates[selectedType].body)}
+                                </p>
                             </div>
-                            <h2 className="text-xl font-black text-[#19325c] mb-2">{emailTemplates[selectedType].subject}</h2>
-                            <div className="h-1 bg-[#ff6e00] w-12 rounded-full mb-4"></div>
-                            <p className="text-sm text-slate-500 leading-relaxed font-medium">
-                                {emailTemplates[selectedType].body}
-                            </p>
                         </div>
 
                         <div className="space-y-4 mb-8">
                             <div className="flex items-center justify-between px-1">
                                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Select Recipients ({filteredCandidates.length})</h3>
                                 {filteredCandidates.length > 0 && (
-                                    <button 
+                                    <Button
+                                        variant="ghost"
+                                        size="xs"
                                         onClick={toggleAll}
-                                        className="text-[10px] font-black text-[#ff6e00] uppercase tracking-widest hover:underline"
+                                        className="text-[#ff6e00]"
                                     >
                                         {selectedCandidates.length === filteredCandidates.length ? 'Deselect All' : 'Select All Group'}
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                             
                             <div className="max-h-[240px] overflow-y-auto pr-2 custom-scrollbar space-y-2">
                                 {filteredCandidates.length > 0 ? filteredCandidates.map((c) => (
-                                    <button
+                                    <Button
                                         key={c.id}
-                                        type="button"
+                                        variant={selectedCandidates.includes(c.id) ? 'secondary' : 'ghost'}
+                                        size="md"
                                         onClick={() => toggleCandidate(c.id)}
-                                        aria-pressed={selectedCandidates.includes(c.id)}
-                                        className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${selectedCandidates.includes(c.id) ? 'bg-orange-50 border-orange-200 ring-2 ring-orange-500/5' : 'bg-white border-slate-100 hover:border-orange-100'}`}
+                                        className={`w-full justify-between items-center transition-all cursor-pointer ${selectedCandidates.includes(c.id) ? 'bg-orange-50 border-orange-200 ring-2 ring-orange-500/5' : 'bg-white border-slate-100 hover:border-orange-100'}`}
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-black ${selectedCandidates.includes(c.id) ? 'bg-[#ff6e00] text-white' : 'bg-slate-100 text-slate-400'}`}>
                                                 {c.name.charAt(0)}
                                             </div>
-                                            <div>
+                                            <div className="text-left">
                                                 <p className="text-sm font-bold text-slate-900 leading-none">{c.name}</p>
                                                 <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">{c.email}</p>
                                             </div>
@@ -196,7 +307,7 @@ const CommunicationPortal = () => {
                                         <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${selectedCandidates.includes(c.id) ? 'bg-[#ff6e00] border-[#ff6e00]' : 'bg-white border-slate-200'}`}>
                                             {selectedCandidates.includes(c.id) && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
                                         </div>
-                                    </button>
+                                    </Button>
                                 )) : (
                                     <div className="py-8 text-center bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
                                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">No candidates found for this stage</p>
@@ -225,15 +336,14 @@ const CommunicationPortal = () => {
                                 </div>
                                 <Button
                                     onClick={handleSendBulk}
-                                    disabled={sending || selectedCandidates.length === 0}
-                                    className={`px-10 py-4 rounded-2xl flex items-center justify-center gap-3 shadow-2xl transition-all duration-300 border-none ${selectedCandidates.length > 0 ? 'bg-[#ff6e00] hover:bg-[#e05d00] shadow-[#ff6e00]/20 hover:scale-105 active:scale-95' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}
+                                    variant="secondary"
+                                    size="lg"
+                                    disabled={selectedCandidates.length === 0}
+                                    loading={sending}
+                                    icon={Send}
+                                    className="flex-1 md:flex-none"
                                 >
-                                    {sending ? 'Sending Notifications...' : (
-                                        <>
-                                            <Send className="w-5 h-5" />
-                                            <span>Send to {selectedCandidates.length} Selected</span>
-                                        </>
-                                    )}
+                                    Send to {selectedCandidates.length} Selected
                                 </Button>
                             </div>
                         </div>

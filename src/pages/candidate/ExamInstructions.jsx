@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Webcam from 'react-webcam';
-import { Camera, ShieldAlert, MonitorOff, Users, CheckCircle, ChevronRight, Info, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Camera, ShieldAlert, MonitorOff, Users, CheckCircle, ChevronRight, Info, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
+import Button from '../../components/Button';
 
 const ExamInstructions = () => {
     const navigate = useNavigate();
@@ -74,13 +75,15 @@ const ExamInstructions = () => {
                         </span>
                     </p>
 
-                    <button
+                    <Button
                         onClick={() => navigate('/login')}
-                        className={`px-10 py-4 font-black rounded-2xl transition-all uppercase tracking-widest shadow-2xl active:scale-95 ${isTerminated ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-white text-[#002D5E] hover:bg-slate-100'
-                            }`}
+                        variant={isMalpractice ? 'danger' : 'primary'}
+                        size="lg"
+                        icon={ArrowRight}
+                        className="shadow-2xl"
                     >
                         Return to Login
-                    </button>
+                    </Button>
                 </div>
             </div>
         );
@@ -149,14 +152,16 @@ const ExamInstructions = () => {
                                 </span>
                             </label>
 
-                            <button
-                                className="w-full bg-[#ff6e00] text-white hover:bg-[#e05d00] border-none font-black py-5 text-lg rounded-2xl shadow-2xl shadow-orange-500/30 flex items-center justify-center gap-3 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed group/btn"
+                            <Button
+                                variant="secondary"
+                                size="lg"
+                                icon={ChevronRight}
                                 disabled={!cameraReady || !acceptedTerms}
                                 onClick={() => navigate('/exam')}
+                                className="w-full shadow-2xl shadow-orange-500/30"
                             >
-                                <span>I UNDERSTAND, START NOW</span>
-                                <ChevronRight className="w-6 h-6 transition-transform group-hover/btn:translate-x-1" />
-                            </button>
+                                I UNDERSTAND, START NOW
+                            </Button>
 
                             {(!cameraReady || !acceptedTerms) && (
                                 <div className="mt-5 flex flex-col items-center gap-2">

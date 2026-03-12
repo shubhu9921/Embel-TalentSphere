@@ -37,9 +37,13 @@ const VacancyFormModal = ({ isOpen, onClose, formData = {}, setFormData, onSubmi
                     />
                 </div>
                 <div className="pt-4">
-                    <Button type="submit" className="w-full py-4 rounded-xl flex items-center justify-center gap-2 bg-[#ff6e00] hover:bg-[#e05d00] border-none shadow-xl shadow-orange-500/20">
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>{formData.id ? 'Save Changes' : 'Publish Vacancy'}</span>
+                    <Button 
+                        type="submit" 
+                        variant="secondary" 
+                        icon={CheckCircle2}
+                        className="w-full"
+                    >
+                        {formData.id ? 'Save Changes' : 'Publish Vacancy'}
                     </Button>
                 </div>
             </form>

@@ -32,29 +32,28 @@ const CandidateDetailModal = ({
                         <Button
                             onClick={() => onUpdateStatus(candidate.id, 'rejected')}
                             variant="danger"
-                            className="rounded-xl px-6 flex items-center gap-2"
+                            icon={XCircle}
                             disabled={candidate.status === 'rejected'}
                         >
-                            <XCircle className="w-4 h-4" />
-                            <span>Reject</span>
+                            Reject
                         </Button>
                         <Button
                             onClick={() => onUpdateStatus(candidate.id, 'shortlisted')}
-                            variant="outline"
-                            className="rounded-xl px-6 flex items-center gap-2 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                            variant="success"
+                            icon={CheckCircle2}
                             disabled={candidate.status === 'shortlisted'}
                         >
-                            <CheckCircle2 className="w-4 h-4" />
-                            <span>Approve</span>
+                            Approve
                         </Button>
                     </div>
                     <Button
                         onClick={onScheduleInterview}
+                        variant="primary"
+                        size="md"
+                        icon={Calendar}
                         disabled={candidate.status === 'interview scheduled'}
-                        className={`rounded-xl px-8 flex items-center gap-2 border-none shadow-xl shadow-blue-900/10 ${candidate.status === 'interview scheduled' ? 'bg-slate-200 text-slate-400' : 'bg-[#19325c] hover:bg-[#112445] text-white'}`}
                     >
-                        <Calendar className="w-4 h-4" />
-                        <span>{candidate.status === 'interview scheduled' ? 'Interview Scheduled' : 'Schedule Interview'}</span>
+                        {candidate.status === 'interview scheduled' ? 'Scheduled' : 'Schedule Interview'}
                     </Button>
                 </div>
             }
@@ -92,12 +91,12 @@ const CandidateDetailModal = ({
                         </div>
                         <Button
                             variant="outline"
-                            className="rounded-xl flex items-center gap-2 h-10 py-1 text-xs"
+                            size="sm"
+                            icon={Download}
                             onClick={() => {
                                 const rawData = candidate.cvUrl || candidate.resumeData;
                                 if (!rawData) return;
                                 if (rawData.startsWith('data:')) {
-                                    // Safe: convert base64 data URL to Blob URL — avoids XSS via document.write
                                     try {
                                         const [header, base64] = rawData.split(',');
                                         const mime = header.match(/:(.*?);/)?.[1] || 'application/pdf';
@@ -115,8 +114,7 @@ const CandidateDetailModal = ({
                             }}
                             disabled={!candidate.cvUrl && !candidate.resumeData}
                         >
-                            <Download className="w-4 h-4" />
-                            <span>{candidate.resumeData || candidate.cvUrl ? (candidate.resumeName ? `View ${candidate.resumeName}` : 'View CV') : 'No CV Available'}</span>
+                            {candidate.resumeData || candidate.cvUrl ? (candidate.resumeName ? `View ${candidate.resumeName}` : 'View CV') : 'No CV Available'}
                         </Button>
                     </div>
                 </div>
@@ -170,7 +168,7 @@ const CandidateDetailModal = ({
                         <Button
                             variant="outline"
                             onClick={() => setShowDetails(true)}
-                            className="w-full py-4 rounded-2xl border-dashed border-2 border-slate-200 text-slate-400 hover:text-[#ff6e00] hover:border-[#ff6e00] transition-all font-black uppercase tracking-widest text-[10px]"
+                            className="w-full border-dashed border-2 text-slate-400 hover:text-[#ff6e00] hover:border-[#ff6e00]"
                         >
                             View Candidate Detailed Information
                         </Button>
@@ -269,16 +267,17 @@ const CandidateDetailModal = ({
                                             </div>
                                             <p className="text-xs font-bold text-slate-700 leading-relaxed">{question.text}</p>
                                         </div>
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            icon={Trash2}
                                             onClick={() => {
                                                 const updated = candidate.assignedQuestions.filter(id => id !== qId);
                                                 onUpdateStatus(candidate.id, candidate.status, { assignedQuestions: updated });
                                             }}
-                                            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-rose-50 rounded-lg opacity-0 group-hover/q:opacity-100 focus:opacity-100 transition-all shrink-0"
+                                            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-rose-50 rounded-lg opacity-0 group-hover/q:opacity-100 focus:opacity-100 transition-all shrink-0 border-none bg-transparent"
                                             aria-label="Remove question"
-                                        >
-                                            <Trash2 size={14} />
-                                        </button>
+                                        />
                                     </div>
                                 ) : null;
                             })}

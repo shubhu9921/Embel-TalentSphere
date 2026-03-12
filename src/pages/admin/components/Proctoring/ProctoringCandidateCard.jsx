@@ -1,5 +1,6 @@
 import React from 'react';
 import { Eye, Clock, Image as ImageIcon } from 'lucide-react';
+import Button from '../../../../components/Button';
 
 const ProctoringCandidateCard = ({ candidate, onSelect }) => {
     const logs = candidate.proctoringLogs || [];
@@ -61,13 +62,15 @@ const ProctoringCandidateCard = ({ candidate, onSelect }) => {
                     </div>
                 </div>
 
-                <button
+                <Button
                     onClick={() => onSelect?.(candidate)}
-                    className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-[#ff6e00] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                    variant="primary"
+                    size="lg"
+                    icon={Eye}
+                    className="w-full hover:bg-orange-600 shadow-xl"
                 >
-                    <Eye size={16} />
                     View Detailed Log
-                </button>
+                </Button>
             </div>
         </div>
     );

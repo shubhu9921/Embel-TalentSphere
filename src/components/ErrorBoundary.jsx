@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { AlertTriangle, RefreshCcw, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Button from './Button';
 
 class ErrorBoundary extends Component {
     constructor(props) {
@@ -38,17 +39,24 @@ class ErrorBoundary extends Component {
                         </p>
 
                         <div className="space-y-4">
-                            <button
+                            <Button
                                 onClick={this.handleReset}
-                                className="w-full py-4 bg-[#ff6e00] hover:bg-[#e05d00] text-white rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2"
+                                variant="secondary"
+                                size="lg"
+                                icon={RefreshCcw}
+                                className="w-full shadow-lg shadow-orange-500/20"
                             >
-                                <RefreshCcw className="w-4 h-4" /> Try Again
-                            </button>
-                            <a href="/"
-                                className="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl font-black uppercase tracking-widest text-sm transition-all flex items-center justify-center gap-2"
+                                Try Again
+                            </Button>
+                            <Button
+                                onClick={() => window.location.href = '/'}
+                                variant="ghost"
+                                size="lg"
+                                icon={Home}
+                                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 border-none"
                             >
-                                <Home className="w-4 h-4" /> Return Home
-                            </a>
+                                Return Home
+                            </Button>
                         </div>
 
                         {process.env.NODE_ENV === 'development' && this.state.error && (
