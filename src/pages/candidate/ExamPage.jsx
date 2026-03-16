@@ -129,6 +129,22 @@ const Sidebar = ({ webcamRef, violations, questions, answers, currentQuestion, s
     </aside>
 );
 
+import { isMobileDevice } from '../../utils/deviceDetection';
+
+const MobileBlockingOverlay = () => (
+    <div className="fixed inset-0 z-[1000] bg-[#002D5E] flex flex-col items-center justify-center text-white p-10 text-center">
+        <div className="w-24 h-24 bg-white/10 rounded-[2.5rem] flex items-center justify-center text-orange-500 mb-8 border border-white/20 shadow-2xl">
+            <MonitorX size={56} />
+        </div>
+        <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter">Desktop Access Required</h2>
+        <p className="text-slate-300 mb-10 max-w-md font-medium text-lg leading-relaxed">
+            This exam cannot be taken on a smartphone or tablet. Please switch to a 
+            <span className="text-orange-500 font-bold block mt-2">Desktop or Laptop computer</span> 
+            to continue with the assessment.
+        </p>
+    </div>
+);
+
 const ExamPage = () => {
     const [questions, setQuestions] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -136,6 +152,7 @@ const ExamPage = () => {
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [candidate, setCandidate] = useState(null);
+    const [isMobile, setIsMobile] = useState(false);
     const navigate = useNavigate();
     const webcamRef = useRef(null);
     const containerRef = useRef(null);
@@ -154,6 +171,12 @@ const ExamPage = () => {
     };
 
     useEffect(() => {
+        if (isMobileDevice()) {
+            setIsMobile(true);
+            setLoading(false);
+            return;
+        }
+
         const storedCandidate = JSON.parse(localStorage.getItem('candidate'));
         if (!storedCandidate) {
             navigate('/login');
@@ -247,6 +270,8 @@ const ExamPage = () => {
             <p className="font-black uppercase tracking-[0.2em] animate-pulse">Initializing Environment</p>
         </div>
     );
+
+    if (isMobile) return <MobileBlockingOverlay />;
 
     if (questions.length === 0) return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-[#002D5E] to-[#112240] p-10 text-center relative">

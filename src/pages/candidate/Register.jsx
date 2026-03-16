@@ -137,6 +137,40 @@ const PersonalInformationSection = ({ register, errors, watchCountry, watchState
             <FormField label="Date of Birth" icon={Calendar} error={errors.dob?.message} required>
                 <input type="date" {...register('dob', { required: 'DOB is mandatory' })} max={new Date().toISOString().split('T')[0]} className="block w-full pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-900 focus:ring-4 focus:ring-orange-500/5 focus:border-[#ff6e00] transition-all outline-none text-sm font-bold placeholder:text-slate-300 shadow-inner" />
             </FormField>
+            <div className="md:col-span-2 p-6 bg-orange-50/50 border border-orange-100 rounded-3xl space-y-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#ff6e00] rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <MonitorX className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest">Hardware Requirements</h4>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Assessment Environment Check</p>
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <Select
+                        label="Do you have a laptop?"
+                        value={watch('hasLaptop')}
+                        options={[
+                            { id: 'yes', label: 'Yes, I have a laptop' },
+                            { id: 'no', label: 'No, I don\'t have one' }
+                        ]}
+                        onSelect={val => setValue('hasLaptop', val)}
+                        required
+                    />
+                    
+                    {watch('hasLaptop') === 'no' && (
+                        <div className="flex items-start gap-3 p-4 bg-white rounded-2xl border border-orange-200 animate-in fade-in slide-in-from-left-4 duration-300">
+                            <AlertCircle className="w-5 h-5 text-[#ff6e00] shrink-0 mt-0.5" />
+                            <p className="text-xs font-black text-[#ff6e00] uppercase tracking-wide leading-relaxed">
+                                You have to visit our office for the exam
+                            </p>
+                        </div>
+                    )}
+                </div>
+            </div>
+
             <div className="space-y-2 group">
                 <label className="text-xs font-black text-slate-900 uppercase tracking-widest ml-1">Account Password</label>
                 <div className="relative group/field">
@@ -339,7 +373,8 @@ const Register = () => {
             country: 'India',
             state: '',
             city: '',
-            position: ''
+            position: '',
+            hasLaptop: 'yes'
         }
     });
 
@@ -419,7 +454,8 @@ const Register = () => {
                 city: rest.city,
                 currentCTC: rest.currentCTC,
                 expectedCTC: rest.expectedCTC,
-                yearsOfExperience: rest.yearsOfExperience
+                yearsOfExperience: rest.yearsOfExperience,
+                hasLaptop: rest.hasLaptop
             };
 
             const response = await ApiService.post('/api/candidates/register', payload);
